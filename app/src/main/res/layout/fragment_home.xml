@@ -11,8 +11,10 @@
         android:layout_height="match_parent">
 
         <androidx.appcompat.widget.SearchView
+            android:layout_marginLeft="15dp"
+            android:background="@drawable/round_coners"
             android:id="@+id/search"
-            android:layout_width="360dp"
+            android:layout_width="330dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             app:iconifiedByDefault="false"
@@ -21,15 +23,15 @@
             app:queryHint="" />
 
         <ImageButton
-            android:background="@drawable/round_coners"
             android:id="@+id/mylocation"
-            android:src="@drawable/my_location"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_marginTop="30dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_marginLeft="5dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/round_coners"
+            android:src="@drawable/my_location"
             app:layout_constraintLeft_toRightOf="@id/search"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <fragment
             android:id="@+id/map"

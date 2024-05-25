@@ -4,6 +4,7 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +47,18 @@ public class home extends Fragment {
         return fragment;
     }
 
+    static View v; // 프래그먼트의 뷰 인스턴스
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if(v!=null){
+            ViewGroup parent = (ViewGroup)v.getParent();
+            if(parent!=null){
+                parent.removeView(v);
+            }
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +71,14 @@ public class home extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        try{
+            v = inflater.inflate(R.layout.fragment_home, container, false);
+        }catch (InflateException e){
+            // 구글맵 View가 이미 inflate되어 있는 상태이므로, 에러를 무시합니다.
+        }
+        // 이후 메서드 구현 계속
+        return v;
     }
+
+
 }

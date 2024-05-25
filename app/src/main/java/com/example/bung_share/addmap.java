@@ -1,12 +1,18 @@
 package com.example.bung_share;
 
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -46,6 +52,18 @@ public class addmap extends Fragment {
         return fragment;
     }
 
+    static View v; // 프래그먼트의 뷰 인스턴스
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if(v!=null){
+            ViewGroup parent = (ViewGroup)v.getParent();
+            if(parent!=null){
+                parent.removeView(v);
+            }
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,12 +71,32 @@ public class addmap extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_addmap, container, false);
+        try{
+            v = inflater.inflate(R.layout.fragment_addmap, container, false);
+        }catch (InflateException e){
+            // 구글맵 View가 이미 inflate되어 있는 상태이므로, 에러를 무시합니다.
+        }
+        ToggleButton monday = v.findViewById(R.id.monday);
+        monday.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override//TODO: 이거 토글버튼 커스텀 보고 수정할 것
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked){
+                    Toast.makeText(getContext(), "월요일", Toast.LENGTH_SHORT).show();
+                    monday.setBackgroundColor(Color.RED);
+                }else{
+                    Toast.makeText(getContext(), "월요일 해제", Toast.LENGTH_SHORT).show();
+                    monday.setBackgroundColor(Color.GRAY);
+                }
+            }
+        });
+        return v;
     }
+
 }
