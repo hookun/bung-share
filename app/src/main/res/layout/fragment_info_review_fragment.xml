@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context=".info_review_fragment"
+    android:padding="20dp">
+
+    <ImageButton
+        android:id="@+id/close_btn"
+        android:src="@drawable/close_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="#00ff0000"
+        android:text="X"
+        android:textColor="@color/black"
+        android:layout_gravity="right"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        >
+        <RatingBar
+            android:id="@+id/RatingBar_review"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="5"
+            />
+        <EditText
+            android:id="@+id/et_review"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="상세리뷰"
+            android:backgroundTint="@color/grey"
+            android:background="@drawable/round_coners"/>
+        <android.widget.Button
+            android:id="@+id/btn_upload_review"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="리뷰올리기"
+            android:background="@drawable/round_coners"
+            android:backgroundTint="@color/grey"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="5dp"
+            />
+    </LinearLayout>
+
+</LinearLayout>

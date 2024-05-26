@@ -14,12 +14,14 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/round_coners"
+        android:backgroundTint="@color/grey"
         />
     <TextView
         android:id="@+id/market_info"
         android:layout_width="280dp"
         android:layout_height="70dp"
         android:background="@drawable/round_coners"
+        android:backgroundTint="@color/grey"
         app:layout_constraintLeft_toRightOf="@+id/logo"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -36,6 +38,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/round_coners"
+        android:backgroundTint="@color/grey"
         android:paddingLeft="30dp"
         android:drawablePadding="-50dp"
         android:gravity="center"
@@ -51,6 +54,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/round_coners"
+        android:backgroundTint="@color/grey"
         android:paddingLeft="30dp"
         android:drawablePadding="-35dp"
         android:gravity="center"
@@ -63,6 +67,7 @@
         android:layout_width="370dp"
         android:layout_height="200dp"
         android:background="@drawable/round_coners"
+        android:backgroundTint="@color/grey"
         android:textAlignment="center"
         android:textSize="14dp"
         android:layout_marginLeft="20dp"
@@ -128,6 +133,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/round_coners"
+        android:backgroundTint="@color/grey"
         android:text="리뷰작성"
         />
     <android.widget.Button
@@ -139,6 +145,8 @@
         android:layout_marginLeft="20dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/round_coners"
+        android:backgroundTint="@color/grey"
         android:text="길찾기"
+
         />
 </androidx.constraintlayout.widget.ConstraintLayout>

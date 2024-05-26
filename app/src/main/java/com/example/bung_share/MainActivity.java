@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
     home homeFragment;
     addmap mapFragment;
     user userFragment;
+    market_info market_info;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         homeFragment = new home();
         mapFragment = new addmap();
         userFragment = new user();
+        market_info = new market_info();
 
         getSupportFragmentManager().beginTransaction().replace(R.id.main_container, homeFragment).commit();
 
@@ -48,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_container, mapFragment).commit();
                     return true;
                 } else if (itemId == R.id.user) {
+                   //getSupportFragmentManager().beginTransaction().replace(R.id.main_container,market_info).commit();
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_container, userFragment).commit();
                     return true;
                 }
