@@ -2,6 +2,9 @@ package com.example.bung_share;
 
 import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.InflateException;
@@ -70,21 +73,61 @@ public class category extends BottomSheetDialogFragment {
         }catch (InflateException e){
             // 구글맵 View가 이미 inflate되어 있는 상태이므로, 에러를 무시합니다.
         }
-
+        return v;
+    }
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        view.findViewById(R.id.close_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
+            }
+        });
         ImageButton btn1,btn2,btn3,btn4,btn5;
         btn1 = (ImageButton) getView().findViewById(R.id.btn1);
         btn2 = (ImageButton) getView().findViewById(R.id.btn2);
         btn3 = (ImageButton) getView().findViewById(R.id.btn3);
         btn4 = (ImageButton) getView().findViewById(R.id.btn4);
         btn5 = (ImageButton) getView().findViewById(R.id.btn5);
-        btn1.setOnClickListener(new View.OnClickListener() {
+        btn1.setOnClickListener(new View.OnClickListener() {//버튼1
             @Override
-            public void onClick(View v) {
+            public void onClick(View v) {//누르면 번들 생성해서 값을 넘겨줌
                 Bundle result = new Bundle();
-                result.putString("selected",btn1.getTag().toString());
+                result.putString("selected","homeicon");
                 getParentFragmentManager().setFragmentResult("requestKey", result);
             }
         });
-        return v;
+        btn2.setOnClickListener(new View.OnClickListener() {//버튼2
+            @Override
+            public void onClick(View v) {
+                Bundle result = new Bundle();
+                result.putString("selected","loveit_off");
+                getParentFragmentManager().setFragmentResult("requestKey", result);
+            }
+        });
+        btn3.setOnClickListener(new View.OnClickListener() {//버튼3
+            @Override
+            public void onClick(View v) {
+                Bundle result = new Bundle();
+                result.putString("selected","loveit_on");
+                getParentFragmentManager().setFragmentResult("requestKey", result);
+            }
+        });
+        btn4.setOnClickListener(new View.OnClickListener() {//버튼4
+            @Override
+            public void onClick(View v) {
+                Bundle result = new Bundle();
+                result.putString("selected","review");
+                getParentFragmentManager().setFragmentResult("requestKey", result);
+            }
+        });
+        btn5.setOnClickListener(new View.OnClickListener() {//버튼5
+            @Override
+            public void onClick(View v) {
+                Bundle result = new Bundle();
+                result.putString("selected","mapicon");
+                getParentFragmentManager().setFragmentResult("requestKey", result);
+            }
+        });
     }
 }

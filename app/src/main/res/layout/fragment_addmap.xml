@@ -14,7 +14,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.google.android.gms.maps.MapView
+        <com.example.bung_share.CustomMapView
             android:id="@+id/market_map"
             android:name="com.google.android.gms.maps.MapFragment"
             android:layout_width="match_parent"
@@ -78,7 +78,8 @@
             android:layout_marginTop="20dp"
             android:layout_marginStart="20dp"/>
 
-        <android.widget.Button
+        <ImageButton
+
             android:id="@+id/category1"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -86,7 +87,8 @@
             app:layout_constraintLeft_toRightOf="@id/categorybtn"
             android:layout_marginTop="20dp"
             android:layout_marginStart="20dp"/>
-        <android.widget.Button
+        <ImageButton
+
             android:id="@+id/category2"
             android:layout_width="50dp"
             android:layout_height="50dp"
@@ -95,6 +97,7 @@
             android:layout_marginTop="20dp"
             android:layout_marginStart="20dp"/>
         <ImageButton
+
             android:id="@+id/category3"
             android:layout_width="50dp"
             android:layout_height="50dp"

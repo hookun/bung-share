@@ -27,7 +27,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/btn1"
-            android:tag="bung"
+            android:tag=""
             />
        <ImageButton
            android:src="@drawable/loveit_off"

@@ -1,43 +1,52 @@
 package com.example.bung_share;
 
+import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.InflateException;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.Toast;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link home#newInstance} factory method to
- * create an instance of this fragment.
- */
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SearchView;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
 public class home extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    SupportMapFragment mapFrag;
+    GoogleMap gMap;
+    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
 
     public home() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment home.
-     */
-    // TODO: Rename and change types and number of parameters
     public static home newInstance(String param1, String param2) {
         home fragment = new home();
         Bundle args = new Bundle();
@@ -47,13 +56,14 @@ public class home extends Fragment {
         return fragment;
     }
 
-    static View v; // 프래그먼트의 뷰 인스턴스
+    static View v;
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if(v!=null){
-            ViewGroup parent = (ViewGroup)v.getParent();
-            if(parent!=null){
+        if (v != null) {
+            ViewGroup parent = (ViewGroup) v.getParent();
+            if (parent != null) {
                 parent.removeView(v);
             }
         }
@@ -71,13 +81,80 @@ public class home extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        try{
+        try {
             v = inflater.inflate(R.layout.fragment_home, container, false);
-        }catch (InflateException e){
+        } catch (InflateException e) {
             // 구글맵 View가 이미 inflate되어 있는 상태이므로, 에러를 무시합니다.
         }
-        // 이후 메서드 구현 계속
+
+        ImageButton mylocation = v.findViewById(R.id.mylocation);
+        androidx.appcompat.widget.SearchView address = v.findViewById(R.id.search);
+        mapFrag = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
+        if (mapFrag == null) {
+            mapFrag = SupportMapFragment.newInstance();
+            getChildFragmentManager().beginTransaction().replace(R.id.map, mapFrag).commit();
+        }
+
+        mapFrag.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(@NonNull GoogleMap googleMap) {
+                gMap = googleMap;
+                showCurrentLocation();
+            }
+        });
+
+        mylocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showCurrentLocation();
+            }
+        });
+        address.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                if(!address.getQuery().toString().equals("")){
+                    Geocoder geocoder = new Geocoder(v.getContext(), Locale.getDefault());
+                    List<android.location.Address> addresses = null;
+                    try {
+                        addresses = geocoder.getFromLocationName(address.getQuery().toString(), 1);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    // 위도, 경도가 있으면 지도의 위치를 변경합니다.
+                    if (addresses != null && addresses.size() > 0) {//변환한 좌표로 mapview 목표좌표 변경
+                        android.location.Address addressObject = addresses.get(0);
+                        LatLng latLng = new LatLng(addressObject.getLatitude(), addressObject.getLongitude());
+                        gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
+                    }
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                return false;
+            }
+        });
         return v;
+    }
+    private void showCurrentLocation() {
+        LocationManager locationManager = (LocationManager) requireActivity().getSystemService(Context.LOCATION_SERVICE);
+        LocationListener locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                LatLng curPoint = new LatLng(location.getLatitude(), location.getLongitude());
+                gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(curPoint, 16));
+                locationManager.removeUpdates(this); // 위치 업데이트 중지
+            }
+        };
+
+        if (ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(requireContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(requireActivity(), new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+            return;
+        }
+
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
     }
 
 
