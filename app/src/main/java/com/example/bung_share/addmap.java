@@ -8,6 +8,8 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentResultListener;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -100,6 +102,7 @@ public class addmap extends Fragment implements OnMapReadyCallback {
 
     }
     MapView mapView;
+    category bottomSheet1;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -114,11 +117,27 @@ public class addmap extends Fragment implements OnMapReadyCallback {
         TimePicker endtime = v.findViewById(R.id.timeend);
         starttime.setIs24HourView(true);
         endtime.setIs24HourView(true);
+        Button categoryButton = v.findViewById(R.id.categorybtn);
         mapView = (MapView) v.findViewById(R.id.market_map);
         mapView.onCreate(savedInstanceState);
-
+        FragmentActivity activity = requireActivity();
         mapView.getMapAsync(this);
-
+        categoryButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                bottomSheet1 = new category();
+                bottomSheet1.show(activity.getSupportFragmentManager(), bottomSheet1.getTag());
+                getParentFragmentManager().setFragmentResultListener("requestKey", activity, new FragmentResultListener() {
+                    @Override
+                    public void onFragmentResult(@NonNull String key, @NonNull Bundle bundle) {
+                        // 번들 키 값 입력
+                        String result = bundle.getString("bundleKey");
+                        // 전달 받은 result 이용하여 코딩
+                        Toast.makeText(getActivity(), result, Toast.LENGTH_LONG).show();
+                    }
+                });
+            }
+        });
         return v;
     }
     @Override
@@ -145,8 +164,12 @@ public class addmap extends Fragment implements OnMapReadyCallback {
 
         MapsInitializer.initialize(this.getActivity());
         CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(35.141233, 126.925594), 14);
+
         MarkerOptions yourMarkerInstance = new MarkerOptions();
         EditText address = v.findViewById(R.id.location);
+        LatLng centerOfMap = googleMap.getCameraPosition().target;
+        yourMarkerInstance.position(centerOfMap);
+        googleMap.addMarker(yourMarkerInstance);
 
         googleMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
 
@@ -173,6 +196,7 @@ public class addmap extends Fragment implements OnMapReadyCallback {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 switch (keyCode) {
                     case KeyEvent.KEYCODE_ENTER:
+
                         if(!address.getText().toString().equals("")){
                             Geocoder geocoder = new Geocoder(v.getContext(), Locale.getDefault());
                             List<android.location.Address> addresses = null;
@@ -194,5 +218,6 @@ public class addmap extends Fragment implements OnMapReadyCallback {
                 return false;
             }
         });
+
     }
 }
