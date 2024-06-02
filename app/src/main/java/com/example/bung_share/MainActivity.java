@@ -1,5 +1,6 @@
 package com.example.bung_share;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,7 +34,8 @@ public class MainActivity extends AppCompatActivity {
         mapFragment = new addmap();
         userFragment = new user();
         market_info = new market_info();
-
+        Intent inintent = getIntent();
+        String id = inintent.getStringExtra("id");
         getSupportFragmentManager().beginTransaction().replace(R.id.main_container, homeFragment).commit();
 
         NavigationBarView navigationBarView = findViewById(R.id.bottom_navigation_view);
@@ -51,12 +53,18 @@ public class MainActivity extends AppCompatActivity {
                     return true;
                 } else if (itemId == R.id.user) {
                    //getSupportFragmentManager().beginTransaction().replace(R.id.main_container,market_info).commit();
+                    Bundle bundle = new Bundle();
+                    // 번들 객체에 값 저장
+                    bundle.putString("key", id);
+                    // 프래그먼트에 번들 설정
+                    userFragment.setArguments(bundle);
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_container, userFragment).commit();
                     return true;
                 }
                 return false;
             }
         });
+
     }
 
 }

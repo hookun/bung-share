@@ -7,8 +7,13 @@ import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
+import com.android.volley.Response;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class info_review_fragment extends BottomSheetDialogFragment {
 
@@ -27,5 +32,24 @@ public class info_review_fragment extends BottomSheetDialogFragment {
                 dismiss();
             }
         });
+        Button upload_btn = view.findViewById(R.id.btn_upload_review);
+        upload_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Response.Listener rlistner = new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jResponse = new JSONObject(response);
+
+                        } catch (JSONException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                    }
+                };
+            }
+        });
+
     }
 }

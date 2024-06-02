@@ -1,5 +1,6 @@
 package com.example.bung_share;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -8,6 +9,7 @@ import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -75,7 +77,12 @@ public class user extends Fragment {
         }catch (InflateException e){
             // 구글맵 View가 이미 inflate되어 있는 상태이므로, 에러를 무시합니다.
         }
+        TextView userid = v.findViewById(R.id.user);
+        Bundle bundle = getArguments();
 
+        // 번들 객체에서 값 받기
+        String value = bundle.getString("key");
+        userid.setText(value);
         return v;
     }
 

@@ -25,6 +25,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Bungshare"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
 
         <meta-data
@@ -32,13 +33,20 @@
             android:value="AIzaSyBvUY2vWKEs_CnVDc3e_Bt1txTnN7alR3Q"/>
         <activity
             android:name=".MainActivity"
-            android:exported="true">
+            >
+
+        </activity>
+        <activity android:name=".loginActivity"
+            android:exported="true"
+            android:label="login">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".regiseterActivity" android:label="register" />
+
     </application>
 
 </manifest>
