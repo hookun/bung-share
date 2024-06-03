@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TimePicker;
@@ -15,10 +16,14 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentResultListener;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -27,6 +32,9 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
@@ -95,7 +103,10 @@ public class addmap extends Fragment implements OnMapReadyCallback {
     }
     MapView mapView;
     category bottomSheet1;
+
     int i = 0;//카테고리 설정용
+    private AlertDialog dialog;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -105,21 +116,33 @@ public class addmap extends Fragment implements OnMapReadyCallback {
         }catch (InflateException e){
             // 구글맵 View가 이미 inflate되어 있는 상태이므로, 에러를 무시합니다.
         }
-        ToggleButton monday = v.findViewById(R.id.monday);
+
+
         TimePicker starttime = v.findViewById(R.id.timestart);
         TimePicker endtime = v.findViewById(R.id.timeend);
         starttime.setIs24HourView(true);
         endtime.setIs24HourView(true);
         Button categoryButton = v.findViewById(R.id.categorybtn);
+        Button addbtn = v.findViewById(R.id.mapUpload);
         ImageButton category1, category2, category3;
         category1=v.findViewById(R.id.category1);
         category2=v.findViewById(R.id.category2);
         category3=v.findViewById(R.id.category3);
+        CheckBox[] pay = new CheckBox[3];
+        Integer[] payid = {R.id.paycheck_cash, R.id.paycheck_bank, R.id.paycheck_card};
+        for(int i=0;i<payid.length;i++){
+            pay[i] = (CheckBox)v.findViewById(payid[i]);
+        }
+        ToggleButton[] cls_day = new ToggleButton[7];
+        Integer[] cls_id = {R.id.monday,R.id.tuesday,R.id.wendsday,R.id.thirsday,R.id.friday,R.id.saturday,R.id.sunday};
+        for(int i=0;i<cls_id.length;i++){
+            cls_day[i] = (ToggleButton) v.findViewById(cls_id[i]);
+        }
         mapView = (MapView) v.findViewById(R.id.market_map);
         mapView.onCreate(savedInstanceState);
         FragmentActivity activity = requireActivity();
         mapView.getMapAsync(this);
-
+        EditText address = v.findViewById(R.id.location);//가게위치 인플레이팅
         categoryButton.setOnClickListener(new View.OnClickListener() {//카테고리 설정
             @Override
             public void onClick(View v) {
@@ -168,6 +191,7 @@ public class addmap extends Fragment implements OnMapReadyCallback {
                 });
             }
         });
+
         category1.setOnClickListener(new View.OnClickListener() {//버튼 누르면 이미지랑 태그 값 날리는거,테코리 버튼 이미지 순서용
             @Override
             public void onClick(View v) {
@@ -193,6 +217,82 @@ public class addmap extends Fragment implements OnMapReadyCallback {
                 category3.setImageResource(0);
                 if(i>0)
                     i--;
+            }
+        });
+        addbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                String Address = address.getText().toString();
+    
+                String sel_category= category1.getTag().toString()+" "+category2.getTag().toString()+" "+category3.getTag().toString();
+                if(sel_category.trim().equals("")){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                    dialog = builder.setMessage("카테고리를 하나이상 체크해주세요.").setNegativeButton("확인", null).create();
+                    dialog.show();
+                    return;
+                }
+                //체크된 결제방식 저장
+                String howtopay = "";
+                String temppay1;
+                String temppay2;
+
+                for(int i=0;i<pay.length;i++){
+                    if(pay[i].isChecked()){
+                        temppay1 = howtopay;
+                        temppay2 =  pay[i].getText().toString();
+                        if(temppay1.equals("")){
+                            howtopay = temppay1+temppay2;
+                        }else
+                            howtopay = temppay1+","+temppay2;
+                    }
+                }
+                if(howtopay.trim().isEmpty()){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                    dialog = builder.setMessage("결제방식을 하나이상 체크해주세요.").setNegativeButton("확인", null).create();
+                    dialog.show();
+                    return;
+                }
+                //체크된 휴무일 저장
+                String closeddays = "";
+                String tempday1;
+                String tempday2;
+                for(int i=0;i<cls_day.length;i++){
+                    if(cls_day[i].isChecked()){
+                        tempday1 = closeddays;
+                        tempday2 =  cls_day[i].getText().toString();
+                        if(closeddays.equals("")){
+                            closeddays = tempday1+tempday2;
+                        }else
+                            closeddays = tempday1+","+tempday2;
+                    }
+                }
+
+                String operationtime = String.valueOf(starttime.getHour()+":"+starttime.getMinute()+"~"+endtime.getHour()+endtime.getMinute());
+
+                Response.Listener<String> responseListener = new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonResponse = new JSONObject(response);
+                            boolean success = jsonResponse.getBoolean("success");
+                            if(success){
+                                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                                dialog = builder.setMessage("등록완료.").setPositiveButton("확인", null).create();
+                                dialog.show();
+                            }else{
+                                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
+                                dialog = builder.setMessage("등록실패.").setNegativeButton("확인", null).create();
+                                dialog.show();
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                };
+                AddMapRequest addMapRequest = new AddMapRequest(Address,sel_category ,howtopay,closeddays,operationtime,responseListener);
+                RequestQueue queue = Volley.newRequestQueue(v.getContext());
+                queue.add(addMapRequest);
             }
         });
         return v;
@@ -228,9 +328,9 @@ public class addmap extends Fragment implements OnMapReadyCallback {
         yourMarkerInstance.position(centerOfMap);//마커 지도 정중앙으로
         googleMap.addMarker(yourMarkerInstance);//마커 생성
 
-        googleMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
+        googleMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
             @Override
-            public void onCameraIdle() {
+            public void onCameraMove() {
                 googleMap.clear();//이전 마커 지우는 용도
                 LatLng centerOfMap = googleMap.getCameraPosition().target; //지도의 정중앙
                 yourMarkerInstance.position(centerOfMap);//마커 지도 정중앙으로
