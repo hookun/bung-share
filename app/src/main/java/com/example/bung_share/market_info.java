@@ -1,7 +1,10 @@
 package com.example.bung_share;
 
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -13,6 +16,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -75,8 +79,9 @@ public class market_info extends Fragment {
 
     info_review_fragment bottomSheet1;
     view_review bottomSheet2;
-    Button view_review, make_review;
+    Button view_review, make_review,nav_button;
     SupportMapFragment mapFrag;
+    LatLng latLng;
     private GoogleMap gMap;
 
     @Override
@@ -203,7 +208,7 @@ public class market_info extends Fragment {
 
                             if (addresses != null && !addresses.isEmpty()) {
                                 Address addressObject = addresses.get(0);
-                                LatLng latLng = new LatLng(addressObject.getLatitude(), addressObject.getLongitude());
+                                latLng = new LatLng(addressObject.getLatitude(), addressObject.getLongitude());
                                 MarkerOptions markerOptions = new MarkerOptions();
                                 gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
                                 markerOptions.position(latLng);
@@ -211,7 +216,24 @@ public class market_info extends Fragment {
                             }
                         }
                     });
-
+                    nav_button = v.findViewById(R.id.how_to_go);
+                    nav_button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            PackageManager packageManager = v.getContext().getPackageManager();
+                            if (isPackageInstalled("com.google.android.apps.maps", packageManager)) {
+                                // 구글맵 앱이 설치되어 있으면 길찾기 실행
+                                String uri = "https://www.google.co.kr/maps/dir//"+address;
+                                Intent intent = new Intent(Intent.ACTION_VIEW,
+                                        Uri.parse(uri));
+                                intent.setPackage("com.google.android.apps.maps");
+                                startActivity(intent);
+                            } else {
+                                // 구글맵 앱이 설치되어 있지 않으면 다운로드하라는 메시지 표시
+                                Toast.makeText(v.getContext(), "Google Maps app is not installed.", Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
                     review_button.setText("리뷰 :" + reviewCount + "개");
                     //TODO 리뷰 리스폰스추가
 
@@ -269,7 +291,17 @@ public class market_info extends Fragment {
                 bottomSheet2.show(activity.getSupportFragmentManager(), bottomSheet2.getTag());
             }
         });
+
         return v;
+    }
+
+    private boolean isPackageInstalled(String packageName, PackageManager packageManager) {
+        try {
+            packageManager.getPackageInfo(packageName, 0);
+            return true;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
     }
 
     public int dpToPx(int dp) {
