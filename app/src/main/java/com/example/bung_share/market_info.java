@@ -1,29 +1,45 @@
 package com.example.bung_share;
 
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
-
+import android.util.Log;
+import android.view.Gravity;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link market_info#newInstance} factory method to
- * create an instance of this fragment.
- */
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.toolbox.Volley;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Locale;
+
 public class market_info extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
@@ -31,15 +47,6 @@ public class market_info extends Fragment {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment market_info.
-     */
-    // TODO: Rename and change types and number of parameters
     public static market_info newInstance(String param1, String param2) {
         market_info fragment = new market_info();
         Bundle args = new Bundle();
@@ -57,26 +64,201 @@ public class market_info extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
+
     static View v;
+
+    ImageView logo;
+    TextView market_info;
+    Button like_button;
+    Button review_button;
+    LinearLayout linearLayout;
+
     info_review_fragment bottomSheet1;
     view_review bottomSheet2;
-    Button view_review,make_review;
+    Button view_review, make_review;
+    SupportMapFragment mapFrag;
+    private GoogleMap gMap;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // 프래그먼트 오류방지용
-        try{
+        try {
             v = inflater.inflate(R.layout.fragment_market_info, container, false);
-        }catch (InflateException e){
+        } catch (InflateException e) {
+            // Handle the exception
         }
+
+        Bundle bundle = getArguments();
+        String value = bundle.getString("storeId");
+        String id = bundle.getString("userid");
+
+
+        logo = v.findViewById(R.id.logo);
+        market_info = v.findViewById(R.id.market_info);
+        like_button = v.findViewById(R.id.likebutton);
+        review_button = v.findViewById(R.id.review_button);
+        linearLayout = v.findViewById(R.id.info_list);
+
+        Response.Listener<String> responseListener = new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject jsonResponse = new JSONObject(response);
+                    String category = jsonResponse.getString("category");
+                    String address = jsonResponse.getString("address");
+                    Double rating = jsonResponse.getDouble("rating");
+                    Integer dibsCount = jsonResponse.getInt("dibsCount");
+                    Integer reviewCount = jsonResponse.getInt("reviewCount");
+                    String operationHours = jsonResponse.getString("operationHours");
+                    String closedays = jsonResponse.getString("closedays");
+                    String status = jsonResponse.getString("status");
+                    String pay = jsonResponse.getString("pay");
+                    String menu = jsonResponse.getString("menu");
+
+                    market_info marketInfoFragment = new market_info();
+
+                    // Market_info 프래그먼트에 마커의 정보를 전달합니다.
+                    Bundle bundle = new Bundle();
+                    bundle.putString("storeId", value);
+                    marketInfoFragment.setArguments(bundle);
+                    market_info.setText(address + "\n" + operationHours + "\n휴무일: " + closedays + "\n결제방법: " + pay);
+                    if (status.equals("closed")) {
+                        logo.setImageResource(R.drawable.close_icon);
+                    } else {
+                        String[] imagename = {"homeicon", "loveit_off", "loveit_on", "review", "mapicon"};
+                        Integer[] image = {R.drawable.homeicon, R.drawable.loveit_off, R.drawable.loveit_on, R.drawable.review, R.drawable.mapicon};
+                        for (int i = 0; i < imagename.length; i++) {
+                            if (imagename[i].equals(category)) {
+                                logo.setImageResource(image[i]);
+                            }
+                        }
+                    }
+
+                    like_button.setText("찜 :" + dibsCount + "개");
+
+                    like_button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(like_button.getTag().equals("off")){
+                                Response.Listener<String> responseListener = new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
+                                        try {
+                                            JSONObject jsonResponse = new JSONObject(response);
+                                            Integer newdibsCount = jsonResponse.getInt("dibsCount");
+                                            Log.d("test", newdibsCount.toString());
+                                            like_button.setText("찜 :"+newdibsCount+"개");
+                                            like_button.setTag("on");
+                                            like_button.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.loveit_on, 0, 0, 0);
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                };
+
+                                Add_dibs_Request addDibsRequest = new Add_dibs_Request(like_button.getTag().toString(),value,responseListener);
+                                RequestQueue queue = Volley.newRequestQueue(v.getContext());
+                                queue.add(addDibsRequest);
+                            }else{
+                                Response.Listener<String> responseListener = new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
+                                        try {
+                                            JSONObject jsonResponse = new JSONObject(response);
+                                            Integer newdibsCount = jsonResponse.getInt("dibsCount");
+                                            Log.d("test", newdibsCount.toString());
+                                            like_button.setText("찜 :"+newdibsCount+"개");
+                                            like_button.setTag("off");
+                                            like_button.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.loveit_off, 0, 0, 0);
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                };
+
+                                Add_dibs_Request addDibsRequest = new Add_dibs_Request(like_button.getTag().toString(),value,responseListener);
+                                RequestQueue queue = Volley.newRequestQueue(v.getContext());
+                                queue.add(addDibsRequest);
+                            }
+
+                        }
+                    });
+                    mapFrag = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.market_map);
+                    if (mapFrag == null) {
+                        mapFrag = SupportMapFragment.newInstance();
+                        getChildFragmentManager().beginTransaction().replace(R.id.market_map, mapFrag).commit();
+                    }
+
+                    mapFrag.getMapAsync(new OnMapReadyCallback() {
+                        @Override
+                        public void onMapReady(@NonNull GoogleMap googleMap) {
+                            gMap = googleMap;
+                            Geocoder geocoder = new Geocoder(v.getContext(), Locale.getDefault());
+                            List<Address> addresses = null;
+                            try {
+                                addresses = geocoder.getFromLocationName(address, 1);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+
+                            if (addresses != null && !addresses.isEmpty()) {
+                                Address addressObject = addresses.get(0);
+                                LatLng latLng = new LatLng(addressObject.getLatitude(), addressObject.getLongitude());
+                                MarkerOptions markerOptions = new MarkerOptions();
+                                gMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
+                                markerOptions.position(latLng);
+                                gMap.addMarker(markerOptions);
+                            }
+                        }
+                    });
+
+                    review_button.setText("리뷰 :" + reviewCount + "개");
+                    //TODO 리뷰 리스폰스추가
+
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                            LinearLayout.LayoutParams.MATCH_PARENT,
+                            dpToPx(50)
+                    );
+                    String[] menuarray = menu.split("\n");
+                    for(int i=0; i<menuarray.length; i++){
+                        TextView textView = new TextView(v.getContext());
+                        textView.setLayoutParams(params);
+                        textView.setGravity(Gravity.CENTER);
+                        textView.setText(menuarray[i]);
+                        textView.setPadding(dpToPx(20), 0, 0, 0);
+                        textView.setCompoundDrawablePadding(dpToPx(-200));
+                        textView.setCompoundDrawablesWithIntrinsicBounds(R.drawable.review, 0, 0, 0);
+                        LinearLayout linearLayout = v.findViewById(R.id.info_list);
+                        linearLayout.addView(textView);
+                    }
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+
+        InfoRequest infoRequest = new InfoRequest(value, responseListener);
+        RequestQueue queue = Volley.newRequestQueue(v.getContext());
+        queue.add(infoRequest);
 
         make_review = v.findViewById(R.id.make_review);
         view_review = v.findViewById(R.id.review_button);
-        FragmentActivity activity = requireActivity();//getSupportFragmentManager() 사용하려고 적용
+        FragmentActivity activity = requireActivity();
         make_review.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view) {//화면아래서 올라오는거 적용
+            public void onClick(View view) {
                 bottomSheet1 = new info_review_fragment();
+
+                // Market_info 프래그먼트에 마커의 정보를 전달합니다.
+                Bundle bundle = new Bundle();
+                bundle.putString("a", value);
+                bundle.putString("b",id);
+                Log.d("test",bundle.getString("a")+bundle.getString("b"));
+                bottomSheet1.setArguments(bundle);
+
+
                 bottomSheet1.show(activity.getSupportFragmentManager(), bottomSheet1.getTag());
             }
         });
@@ -88,5 +270,9 @@ public class market_info extends Fragment {
             }
         });
         return v;
+    }
+
+    public int dpToPx(int dp) {
+        return (int) (dp * getResources().getDisplayMetrics().density);
     }
 }

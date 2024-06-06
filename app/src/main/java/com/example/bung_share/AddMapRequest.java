@@ -9,7 +9,7 @@ import java.util.Map;
 public class AddMapRequest extends StringRequest {
     final static private String URL = "http://27.96.131.54:8080/2020081097/Addmap.jsp";
     private Map<String, String> parameters;
-    public AddMapRequest(String address, String category, String pay, String closeday, String operationtime, Response.Listener<String> listener) {
+    public AddMapRequest(String address, String category, String pay, String closeday, String operationtime,String menuinfo, Response.Listener<String> listener) {
         super(Method.POST, URL, listener, null);
 
         parameters = new HashMap<>();
@@ -18,6 +18,7 @@ public class AddMapRequest extends StringRequest {
         parameters.put("pay", pay);
         parameters.put("closedDays", closeday);
         parameters.put("operationHours", operationtime);
+        parameters.put("menu", menuinfo);
     }
     public Map<String, String> getParams() {
         return parameters;

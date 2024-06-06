@@ -36,6 +36,11 @@ public class MainActivity extends AppCompatActivity {
         market_info = new market_info();
         Intent inintent = getIntent();
         String id = inintent.getStringExtra("id");
+        Bundle bundle = new Bundle();
+        // 번들 객체에 값 저장
+        bundle.putString("userid", id);
+        // 프래그먼트에 번들 설정
+        homeFragment.setArguments(bundle);
         getSupportFragmentManager().beginTransaction().replace(R.id.main_container, homeFragment).commit();
 
         NavigationBarView navigationBarView = findViewById(R.id.bottom_navigation_view);

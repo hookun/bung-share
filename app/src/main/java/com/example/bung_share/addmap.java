@@ -130,6 +130,8 @@ public class addmap extends Fragment implements OnMapReadyCallback {
         category3=v.findViewById(R.id.category3);
         CheckBox[] pay = new CheckBox[3];
         Integer[] payid = {R.id.paycheck_cash, R.id.paycheck_bank, R.id.paycheck_card};
+        EditText menuinfo_edit = v.findViewById(R.id.menu_info);
+
         for(int i=0;i<payid.length;i++){
             pay[i] = (CheckBox)v.findViewById(payid[i]);
         }
@@ -269,28 +271,26 @@ public class addmap extends Fragment implements OnMapReadyCallback {
                 }
 
                 String operationtime = String.valueOf(starttime.getHour()+":"+starttime.getMinute()+"~"+endtime.getHour()+endtime.getMinute());
-
+                String menuinfo = menuinfo_edit.getText().toString();
                 Response.Listener<String> responseListener = new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try {
                             JSONObject jsonResponse = new JSONObject(response);
                             boolean success = jsonResponse.getBoolean("success");
+                            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                             if(success){
-                                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                                 dialog = builder.setMessage("등록완료.").setPositiveButton("확인", null).create();
-                                dialog.show();
                             }else{
-                                AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                                 dialog = builder.setMessage("등록실패.").setNegativeButton("확인", null).create();
-                                dialog.show();
                             }
+                            dialog.show();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
                 };
-                AddMapRequest addMapRequest = new AddMapRequest(Address,sel_category ,howtopay,closeddays,operationtime,responseListener);
+                AddMapRequest addMapRequest = new AddMapRequest(Address,sel_category ,howtopay,closeddays,operationtime,menuinfo,responseListener);
                 RequestQueue queue = Volley.newRequestQueue(v.getContext());
                 queue.add(addMapRequest);
             }

@@ -20,10 +20,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class regiseterActivity extends AppCompatActivity {
-    private ArrayAdapter adapter;
-    private String userID;
-    private String userPassword;
-    private String userEmail;
+    //private ArrayAdapter adapter;
+    //private String userID;
+    //private String userPassword;
+    //private String userEmail;
     private AlertDialog dialog;
     private boolean validate = false;
     public void onCreate(Bundle savedInstanceState) {
