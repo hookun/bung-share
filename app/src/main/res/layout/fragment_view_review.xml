@@ -24,7 +24,7 @@
         android:textSize="20dp"/>
 
         <RatingBar
-            android:id="@+id/RatingBar_review"
+            android:id="@+id/avg_rating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:numStars="5"
@@ -41,124 +41,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/round_coners"
-                android:backgroundTint="@color/grey">
-                <TextView
-                    android:id="@+id/review_id"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:text="User 1"
-                    android:textSize="18dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="20dp"
-                    />
-                <RatingBar
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/Widget.AppCompat.RatingBar.Indicator"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginRight="20dp"
-                    android:numStars="5"
-                    android:isIndicator="true"
-                    />
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/review_id"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:text="테\n스\n트\n스\n트\n스\n트\n스\n트\n스\n트"
-                    />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/round_coners"
-                android:backgroundTint="@color/grey"
-                android:layout_marginTop="10dp">
-                <TextView
-                    android:id="@+id/review_id2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:text="User 1"
-                    android:textSize="18dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="20dp"
-                    />
-                <RatingBar
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/Widget.AppCompat.RatingBar.Indicator"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginRight="20dp"
-                    android:numStars="5"
-                    android:isIndicator="true"
-                    />
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/review_id2"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:text="테\n스\n트\n스\n트\n스\n트\n스\n트\n스\n트"
-                    />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/round_coners"
-                android:backgroundTint="@color/grey"
-                android:layout_marginTop="10dp">
-                <TextView
-                    android:id="@+id/review_id3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:text="User 1"
-                    android:textSize="18dp"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="20dp"
-                    />
-                <RatingBar
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    style="@style/Widget.AppCompat.RatingBar.Indicator"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginRight="20dp"
-                    android:numStars="5"
-                    android:isIndicator="true"
-                    />
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="150dp"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/review_id3"
-                    android:layout_marginTop="5dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:text="테\n스\n트\n스\n트\n스\n트\n스\n트\n스\n트"
-                    />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </LinearLayout>
+            android:orientation="vertical"
+            android:id="@+id/review_scroll">
+            </LinearLayout>
 
     </ScrollView>
 </LinearLayout>

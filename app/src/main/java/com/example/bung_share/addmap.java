@@ -37,6 +37,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Locale;
 
@@ -269,8 +270,20 @@ public class addmap extends Fragment implements OnMapReadyCallback {
                             closeddays = tempday1+","+tempday2;
                     }
                 }
+                DecimalFormat formatter = new DecimalFormat("00");
 
-                String operationtime = String.valueOf(starttime.getHour()+":"+starttime.getMinute()+"~"+endtime.getHour()+endtime.getMinute());
+                int s_hours = starttime.getHour();
+                int s_minutes = starttime.getMinute();
+                int e_hours = endtime.getHour();
+                int e_minutes = endtime.getMinute();
+
+                String formattedHour_s = formatter.format(s_hours);
+                String formattedMinute_s = formatter.format(s_minutes);
+
+                String formattedHour_e = formatter.format(e_hours);
+                String formattedMinute_e = formatter.format(e_minutes);
+
+                String operationtime = String.valueOf(formattedHour_s+":"+formattedMinute_s+"~"+formattedHour_e+":"+formattedMinute_e);
                 String menuinfo = menuinfo_edit.getText().toString();
                 Response.Listener<String> responseListener = new Response.Listener<String>() {
                     @Override

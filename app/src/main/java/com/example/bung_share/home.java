@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
@@ -143,17 +144,18 @@ public class home extends Fragment {
                                     android.location.Address addressObject = addresses.get(0);
                                     LatLng latLng = new LatLng(addressObject.getLatitude(), addressObject.getLongitude());
                                     markerOptions.position(latLng);
-                                    gMap.addMarker(markerOptions);
-                                    int j = i;//값 넘기기용 임시
+                                    Marker marker = gMap.addMarker(markerOptions); // Store the marker object
+                                    marker.setTag(storeId.get(i)); // Set the store ID as the tag for the marker
+
                                     gMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                                         @Override
-                                        public boolean onMarkerClick(@NonNull Marker marker) {
-                                            // Market_info 프래그먼트를 생성합니다.
+                                        public boolean onMarkerClick(Marker marker) {
+                                            String title = (String) marker.getTag(); // Get the store ID from the marker tag
                                             market_info marketInfoFragment = new market_info();
 
                                             // Market_info 프래그먼트에 마커의 정보를 전달합니다.
                                             Bundle bundle = new Bundle();
-                                            bundle.putString("storeId", storeId.get(j));
+                                            bundle.putString("storeId", title);
                                             bundle.putString("userid",id);
                                             marketInfoFragment.setArguments(bundle);
 
@@ -162,11 +164,11 @@ public class home extends Fragment {
                                                     .replace(R.id.main_container, marketInfoFragment)
                                                     .addToBackStack(null)
                                                     .commit();
-
                                             return false;
                                         }
                                     });
-                                    Log.d("test", "추가완료");
+
+                                    Log.d("test", storeId.get(i) + "추가완료");
                                 }
                             }
                         } catch (JSONException e) {

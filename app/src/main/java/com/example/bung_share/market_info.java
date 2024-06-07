@@ -50,6 +50,16 @@ public class market_info extends Fragment {
     public market_info() {
         // Required empty public constructor
     }
+    public void onDestroyView() {
+        super.onDestroyView();
+        // 이전에 있던 값 제거용
+        removeDynamicViews();
+    }
+
+    private void removeDynamicViews() {
+        // LinearLayout에서 모든 자식 뷰를 제거
+        linearLayout.removeAllViews();
+    }
 
     public static market_info newInstance(String param1, String param2) {
         market_info fragment = new market_info();
@@ -112,8 +122,8 @@ public class market_info extends Fragment {
                     String category = jsonResponse.getString("category");
                     String address = jsonResponse.getString("address");
                     Double rating = jsonResponse.getDouble("rating");
-                    Integer dibsCount = jsonResponse.getInt("dibsCount");
-                    Integer reviewCount = jsonResponse.getInt("reviewCount");
+                    int dibsCount = jsonResponse.getInt("dibsCount");
+                    int reviewCount = jsonResponse.getInt("reviewCount");
                     String operationHours = jsonResponse.getString("operationHours");
                     String closedays = jsonResponse.getString("closedays");
                     String status = jsonResponse.getString("status");
@@ -126,14 +136,19 @@ public class market_info extends Fragment {
                     Bundle bundle = new Bundle();
                     bundle.putString("storeId", value);
                     marketInfoFragment.setArguments(bundle);
-                    market_info.setText(address + "\n" + operationHours + "\n휴무일: " + closedays + "\n결제방법: " + pay);
+                    Log.d("test", address);
+                    if(closedays.equals("")){
+                        market_info.setText(address + "\n" + operationHours + "\n휴무일: 없음" + "\n결제방법: " + pay);
+                    }else
+                        market_info.setText(address + "\n" + operationHours + "\n휴무일: "+closedays + "\n결제방법: " + pay);
                     if (status.equals("closed")) {
                         logo.setImageResource(R.drawable.close_icon);
                     } else {
+                        String maincategory = category.substring(0, category.indexOf(" "));
                         String[] imagename = {"homeicon", "loveit_off", "loveit_on", "review", "mapicon"};
                         Integer[] image = {R.drawable.homeicon, R.drawable.loveit_off, R.drawable.loveit_on, R.drawable.review, R.drawable.mapicon};
                         for (int i = 0; i < imagename.length; i++) {
-                            if (imagename[i].equals(category)) {
+                            if (imagename[i].equals(maincategory)) {
                                 logo.setImageResource(image[i]);
                             }
                         }
@@ -275,12 +290,9 @@ public class market_info extends Fragment {
 
                 // Market_info 프래그먼트에 마커의 정보를 전달합니다.
                 Bundle bundle = new Bundle();
-                bundle.putString("a", value);
-                bundle.putString("b",id);
-                Log.d("test",bundle.getString("a")+bundle.getString("b"));
+                bundle.putString("storeId", value);
+                bundle.putString("userid",id);
                 bottomSheet1.setArguments(bundle);
-
-
                 bottomSheet1.show(activity.getSupportFragmentManager(), bottomSheet1.getTag());
             }
         });
@@ -288,6 +300,9 @@ public class market_info extends Fragment {
             @Override
             public void onClick(View v) {
                 bottomSheet2 = new view_review();
+                Bundle bundle = new Bundle();
+                bundle.putString("storeId", value);
+                bottomSheet2.setArguments(bundle);
                 bottomSheet2.show(activity.getSupportFragmentManager(), bottomSheet2.getTag());
             }
         });

@@ -85,14 +85,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:layout_gravity="center">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:gravity="center"
-                android:text="팥붕 2000원/2개"
-                android:paddingLeft="20dp"
-                android:drawablePadding="-200dp"
-                android:drawableLeft="@drawable/review"/>
+
         </LinearLayout>
     </ScrollView>
     <fragment

@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.RatingBar;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -27,9 +29,16 @@ public class info_review_fragment extends BottomSheetDialogFragment {
         return inflater.inflate(R.layout.fragment_info_review_fragment, container, false);
     }
     private AlertDialog dialog;
+
+    RatingBar ratingBar;
+    EditText review_content;
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ratingBar = view.findViewById(R.id.RatingBar_review);
+        review_content = view.findViewById(R.id.et_review);
+
         view.findViewById(R.id.close_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -37,20 +46,20 @@ public class info_review_fragment extends BottomSheetDialogFragment {
             }
         });
         String userId, storeId;
-        double rating;
-        String content;
         Button upload_btn = view.findViewById(R.id.btn_upload_review);
 
         Bundle bundle = getArguments();
-        String value = bundle.getString("a");
-        String id = bundle.getString("b");
+        storeId = bundle.getString("storeId");
+        userId = bundle.getString("userid");
 
         //TODO:날짜랑 별점 처리하고 DB에 넣는거 구현할것
 
 
-        /*upload_btn.setOnClickListener(new View.OnClickListener() {
+        upload_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                String rating = String.valueOf(ratingBar.getRating());
+                String content = review_content.getText().toString();
                 Response.Listener<String> responseListener = new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -69,11 +78,11 @@ public class info_review_fragment extends BottomSheetDialogFragment {
                         }
                     }
                 };
-                Make_review_Request makeReviewRequest = new AddMapRequest(userId, storeId, rating, content,responseListener);
+                Make_review_Request makeReviewRequest = new Make_review_Request(userId, storeId, rating, content,responseListener);
                 RequestQueue queue = Volley.newRequestQueue(v.getContext());
                 queue.add(makeReviewRequest);
             }
-        });*/
+        });
 
     }
 }
