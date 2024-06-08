@@ -61,7 +61,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:id="@+id/dibed_layout">
                 <!--<Button
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
@@ -108,7 +109,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:id="@+id/reviewed_layout">
                     <!--<Button
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
@@ -143,7 +145,7 @@
                 android:id="@+id/posted_txt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="내가 찜한 가게>"
+                android:text="내가 제보한 가게>"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
             <ScrollView
@@ -155,7 +157,8 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:id="@+id/added_layout">
                     <!--<Button
                     android:layout_width="match_parent"
                     android:layout_height="40dp"

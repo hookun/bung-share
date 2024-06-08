@@ -32,6 +32,9 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -113,6 +116,9 @@ public class market_info extends Fragment {
         like_button = v.findViewById(R.id.likebutton);
         review_button = v.findViewById(R.id.review_button);
         linearLayout = v.findViewById(R.id.info_list);
+        //다른가게 화면 갔었어도 원래 상태 되게끔 초기화
+        like_button.setTag("off");
+        like_button.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.loveit_off, 0, 0, 0);
 
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
@@ -129,6 +135,7 @@ public class market_info extends Fragment {
                     String status = jsonResponse.getString("status");
                     String pay = jsonResponse.getString("pay");
                     String menu = jsonResponse.getString("menu");
+                    boolean isdibed = jsonResponse.getBoolean("isDibsed");
 
                     market_info marketInfoFragment = new market_info();
 
@@ -153,54 +160,43 @@ public class market_info extends Fragment {
                             }
                         }
                     }
-
+                    if(isdibed){
+                        like_button.setTag("on");
+                        like_button.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.loveit_on, 0, 0, 0);
+                    }else{
+                        like_button.setTag("off");
+                    }
                     like_button.setText("찜 :" + dibsCount + "개");
 
                     like_button.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            if(like_button.getTag().equals("off")){
-                                Response.Listener<String> responseListener = new Response.Listener<String>() {
-                                    @Override
-                                    public void onResponse(String response) {
-                                        try {
-                                            JSONObject jsonResponse = new JSONObject(response);
-                                            Integer newdibsCount = jsonResponse.getInt("dibsCount");
-                                            Log.d("test", newdibsCount.toString());
-                                            like_button.setText("찜 :"+newdibsCount+"개");
+                            Response.Listener<String> responseListener = new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    try {
+                                        Log.d("test", response.toString());
+                                        JSONObject jsonResponse = new JSONObject(response);
+                                        Integer newdibsCount = jsonResponse.getInt("dibsCount");
+
+                                        like_button.setText("찜 :"+newdibsCount+"개");
+
+                                        if (like_button.getTag().equals("off")) {
                                             like_button.setTag("on");
                                             like_button.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.loveit_on, 0, 0, 0);
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                };
-
-                                Add_dibs_Request addDibsRequest = new Add_dibs_Request(like_button.getTag().toString(),value,responseListener);
-                                RequestQueue queue = Volley.newRequestQueue(v.getContext());
-                                queue.add(addDibsRequest);
-                            }else{
-                                Response.Listener<String> responseListener = new Response.Listener<String>() {
-                                    @Override
-                                    public void onResponse(String response) {
-                                        try {
-                                            JSONObject jsonResponse = new JSONObject(response);
-                                            Integer newdibsCount = jsonResponse.getInt("dibsCount");
-                                            Log.d("test", newdibsCount.toString());
-                                            like_button.setText("찜 :"+newdibsCount+"개");
+                                        } else {
                                             like_button.setTag("off");
                                             like_button.setCompoundDrawablesRelativeWithIntrinsicBounds(R.drawable.loveit_off, 0, 0, 0);
-                                        } catch (JSONException e) {
-                                            e.printStackTrace();
                                         }
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
                                     }
-                                };
+                                }
+                            };
 
-                                Add_dibs_Request addDibsRequest = new Add_dibs_Request(like_button.getTag().toString(),value,responseListener);
-                                RequestQueue queue = Volley.newRequestQueue(v.getContext());
-                                queue.add(addDibsRequest);
-                            }
-
+                            Add_dibs_Request addDibsRequest = new Add_dibs_Request(like_button.getTag().toString(), value,id,responseListener);
+                            RequestQueue queue = Volley.newRequestQueue(v.getContext());
+                            queue.add(addDibsRequest);
                         }
                     });
                     mapFrag = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.market_map);
@@ -276,7 +272,7 @@ public class market_info extends Fragment {
             }
         };
 
-        InfoRequest infoRequest = new InfoRequest(value, responseListener);
+        InfoRequest infoRequest = new InfoRequest(value, id,responseListener);
         RequestQueue queue = Volley.newRequestQueue(v.getContext());
         queue.add(infoRequest);
 
@@ -317,6 +313,27 @@ public class market_info extends Fragment {
         } catch (PackageManager.NameNotFoundException e) {
             return false;
         }
+    }
+    // 이벤트 수신을 위한 메서드 작성
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onCustomEventReceived(info_review_fragment.CustomEvent event) {
+        // 전송된 값을 가져와서 버튼 텍스트 변경
+        int receivedValue = event.getValue();
+        review_button.setText("리뷰 :" + String.valueOf(receivedValue) + "개"); // 버튼의 텍스트를 전송된 값으로 변경
+    }
+
+    // EventBus에 이벤트 수신 등록
+    @Override
+    public void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    // EventBus에 이벤트 수신 등록 해제
+    @Override
+    public void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
     }
 
     public int dpToPx(int dp) {

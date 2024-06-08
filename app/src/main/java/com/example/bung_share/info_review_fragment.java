@@ -18,6 +18,7 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import org.greenrobot.eventbus.EventBus;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -32,6 +33,20 @@ public class info_review_fragment extends BottomSheetDialogFragment {
 
     RatingBar ratingBar;
     EditText review_content;
+    public class CustomEvent {
+        private int value;
+
+        public CustomEvent(int value) {
+            this.value = value;
+        }
+
+        public int getValue() {
+            return value;
+        }
+    }
+
+    // 이벤트 전송
+
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -52,8 +67,6 @@ public class info_review_fragment extends BottomSheetDialogFragment {
         storeId = bundle.getString("storeId");
         userId = bundle.getString("userid");
 
-        //TODO:날짜랑 별점 처리하고 DB에 넣는거 구현할것
-
 
         upload_btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,11 +79,18 @@ public class info_review_fragment extends BottomSheetDialogFragment {
                         try {
                             JSONObject jsonResponse = new JSONObject(response);
                             boolean success = jsonResponse.getBoolean("success");
+                            boolean already = jsonResponse.getBoolean("already");
+                            int reviewcount = jsonResponse.getInt("reviewCount");
+
                             AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                             if(success){
                                 dialog = builder.setMessage("등록완료.").setPositiveButton("확인", null).create();
+                                CustomEvent event = new CustomEvent(reviewcount);
+                                EventBus.getDefault().post(event);
+                            }else if(!success&&already){
+                                dialog = builder.setMessage("이미 작성한 리뷰가 있습니다.").setNegativeButton("확인", null).create();
                             }else{
-                                dialog = builder.setMessage("등록실패.").setNegativeButton("확인", null).create();
+                                dialog = builder.setMessage("등록실패").setNegativeButton("확인", null).create();
                             }
                             dialog.show();
                         } catch (JSONException e) {

@@ -6,15 +6,14 @@ import com.android.volley.toolbox.StringRequest;
 import java.util.HashMap;
 import java.util.Map;
 
-public class InfoRequest extends StringRequest {
-    final static private String URL = "http://27.96.131.54:8080/2020081097/Info.jsp";
+public class UserRequest extends StringRequest {
+    final static private String URL = "http://27.96.131.54:8080/2020081097/user_Request.jsp";
     private Map<String, String> parameters;
-    public InfoRequest(String storeId, String userId,Response.Listener<String> listener) {
+    public UserRequest(String userid, Response.Listener<String> listener) {
         super(Method.POST, URL, listener, null);
 
         parameters = new HashMap<>();
-        parameters.put("storeid", storeId);
-        parameters.put("userid", userId);
+        parameters.put("userid", userid);
 
     }
     public Map<String, String> getParams() {
