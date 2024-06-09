@@ -83,17 +83,19 @@ public class category extends BottomSheetDialogFragment {
                 dismiss();
             }
         });
-        ImageButton btn1,btn2,btn3,btn4,btn5;
+        ImageButton btn1,btn2,btn3,btn4,btn5,btn6;
         btn1 = (ImageButton) getView().findViewById(R.id.btn1);
         btn2 = (ImageButton) getView().findViewById(R.id.btn2);
         btn3 = (ImageButton) getView().findViewById(R.id.btn3);
         btn4 = (ImageButton) getView().findViewById(R.id.btn4);
         btn5 = (ImageButton) getView().findViewById(R.id.btn5);
+        btn6 = (ImageButton) getView().findViewById(R.id.btn6);
+
         btn1.setOnClickListener(new View.OnClickListener() {//버튼1
             @Override
             public void onClick(View v) {//누르면 번들 생성해서 값을 넘겨줌
                 Bundle result = new Bundle();
-                result.putString("selected","homeicon");
+                result.putString("selected","taiyaki");
                 getParentFragmentManager().setFragmentResult("requestKey", result);
             }
         });
@@ -101,7 +103,7 @@ public class category extends BottomSheetDialogFragment {
             @Override
             public void onClick(View v) {
                 Bundle result = new Bundle();
-                result.putString("selected","loveit_off");
+                result.putString("selected","k_pancake");
                 getParentFragmentManager().setFragmentResult("requestKey", result);
             }
         });
@@ -109,7 +111,7 @@ public class category extends BottomSheetDialogFragment {
             @Override
             public void onClick(View v) {
                 Bundle result = new Bundle();
-                result.putString("selected","loveit_on");
+                result.putString("selected","ricecake");
                 getParentFragmentManager().setFragmentResult("requestKey", result);
             }
         });
@@ -117,7 +119,7 @@ public class category extends BottomSheetDialogFragment {
             @Override
             public void onClick(View v) {
                 Bundle result = new Bundle();
-                result.putString("selected","review");
+                result.putString("selected","takoyaki");
                 getParentFragmentManager().setFragmentResult("requestKey", result);
             }
         });
@@ -125,7 +127,15 @@ public class category extends BottomSheetDialogFragment {
             @Override
             public void onClick(View v) {
                 Bundle result = new Bundle();
-                result.putString("selected","mapicon");
+                result.putString("selected","toast");
+                getParentFragmentManager().setFragmentResult("requestKey", result);
+            }
+        });
+        btn6.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle result = new Bundle();
+                result.putString("selected","tanghuru");
                 getParentFragmentManager().setFragmentResult("requestKey", result);
             }
         });

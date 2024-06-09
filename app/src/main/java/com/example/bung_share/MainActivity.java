@@ -54,6 +54,11 @@ public class MainActivity extends AppCompatActivity {
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_container, homeFragment).commit();
                     return true;
                 } else if (itemId == R.id.addmap) {
+                    Bundle bundle = new Bundle();
+                    // 번들 객체에 값 저장
+                    bundle.putString("key", id);
+                    // 프래그먼트에 번들 설정
+                    mapFragment.setArguments(bundle);
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_container, mapFragment).commit();
                     return true;
                 } else if (itemId == R.id.user) {

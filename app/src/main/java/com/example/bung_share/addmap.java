@@ -1,7 +1,9 @@
 package com.example.bung_share;
 
+import android.annotation.SuppressLint;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.InflateException;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -82,12 +84,13 @@ public class addmap extends Fragment implements OnMapReadyCallback {
     }
 
     static View v; // 프래그먼트의 뷰 인스턴스
+
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if(v!=null){
-            ViewGroup parent = (ViewGroup)v.getParent();
-            if(parent!=null){
+        if (v != null) {
+            ViewGroup parent = (ViewGroup) v.getParent();
+            if (parent != null) {
                 parent.removeView(v);
             }
         }
@@ -102,6 +105,7 @@ public class addmap extends Fragment implements OnMapReadyCallback {
         }
 
     }
+
     MapView mapView;
     category bottomSheet1;
 
@@ -112,12 +116,14 @@ public class addmap extends Fragment implements OnMapReadyCallback {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        try{
+        try {
             v = inflater.inflate(R.layout.fragment_addmap, container, false);
-        }catch (InflateException e){
+        } catch (InflateException e) {
             // 구글맵 View가 이미 inflate되어 있는 상태이므로, 에러를 무시합니다.
         }
 
+        Bundle bundle = getArguments();
+        String userid = bundle.getString("key");
 
         TimePicker starttime = v.findViewById(R.id.timestart);
         TimePicker endtime = v.findViewById(R.id.timeend);
@@ -126,19 +132,19 @@ public class addmap extends Fragment implements OnMapReadyCallback {
         Button categoryButton = v.findViewById(R.id.categorybtn);
         Button addbtn = v.findViewById(R.id.mapUpload);
         ImageButton category1, category2, category3;
-        category1=v.findViewById(R.id.category1);
-        category2=v.findViewById(R.id.category2);
-        category3=v.findViewById(R.id.category3);
+        category1 = v.findViewById(R.id.category1);
+        category2 = v.findViewById(R.id.category2);
+        category3 = v.findViewById(R.id.category3);
         CheckBox[] pay = new CheckBox[3];
         Integer[] payid = {R.id.paycheck_cash, R.id.paycheck_bank, R.id.paycheck_card};
         EditText menuinfo_edit = v.findViewById(R.id.menu_info);
 
-        for(int i=0;i<payid.length;i++){
-            pay[i] = (CheckBox)v.findViewById(payid[i]);
+        for (int i = 0; i < payid.length; i++) {
+            pay[i] = (CheckBox) v.findViewById(payid[i]);
         }
         ToggleButton[] cls_day = new ToggleButton[7];
-        Integer[] cls_id = {R.id.monday,R.id.tuesday,R.id.wendsday,R.id.thirsday,R.id.friday,R.id.saturday,R.id.sunday};
-        for(int i=0;i<cls_id.length;i++){
+        Integer[] cls_id = {R.id.monday, R.id.tuesday, R.id.wendsday, R.id.thirsday, R.id.friday, R.id.saturday, R.id.sunday};
+        for (int i = 0; i < cls_id.length; i++) {
             cls_day[i] = (ToggleButton) v.findViewById(cls_id[i]);
         }
         mapView = (MapView) v.findViewById(R.id.market_map);
@@ -160,34 +166,37 @@ public class addmap extends Fragment implements OnMapReadyCallback {
                         String result = bundle.getString("selected");
                         // 전달 받은 result 값(해당버튼이미지) 받아서 값설정
                         int imageResourceId = getResources().getIdentifier(result, "drawable", activity.getPackageName());
-                        switch (i){//버튼이 왼쪽부터 채워지게
+                        switch (i) {//버튼이 왼쪽부터 채워지게
                             case 0:
                                 category1.setImageResource(imageResourceId);//이미지 찾아서 넣고
                                 category1.setTag(result);//tag사용해서 나중에 DB에 넣을 값설정
+                                returncategory(result);
                                 i++;
                                 break;
                             case 1:
-                                if(category1.getTag().equals(result)){//같은 카테고리 또 설정 못하게끔 
-                                    Toast.makeText(v.getContext(),"같은 카테고리를 등록할 수 없습니다",Toast.LENGTH_SHORT).show();
-                                }else {
+                                if (category1.getTag().equals(result)) {//같은 카테고리 또 설정 못하게끔
+                                    Toast.makeText(v.getContext(), "같은 카테고리를 등록할 수 없습니다", Toast.LENGTH_SHORT).show();
+                                } else {
                                     category2.setImageResource(imageResourceId);
                                     category2.setTag(result);
+                                    returncategory(result);
                                     i++;
                                 }
 
                                 break;
                             case 2:
-                                if(category1.getTag().equals(result)||category2.getTag().equals(result)){//같은 카테고리 또 설정 못하게끔 
-                                    Toast.makeText(v.getContext(),"같은 카테고리를 등록할 수 없습니다",Toast.LENGTH_SHORT).show();
-                                }else {
+                                if (category1.getTag().equals(result) || category2.getTag().equals(result)) {//같은 카테고리 또 설정 못하게끔
+                                    Toast.makeText(v.getContext(), "같은 카테고리를 등록할 수 없습니다", Toast.LENGTH_SHORT).show();
+                                } else {
                                     category3.setImageResource(imageResourceId);
                                     category3.setTag(result);
-                                    Toast.makeText(v.getContext(),result,Toast.LENGTH_SHORT).show();
+                                    returncategory(result);
+                                    Toast.makeText(v.getContext(), result, Toast.LENGTH_SHORT).show();
                                     i++;
                                 }
                                 break;
                             case 3://3개 이상 등록 못하게
-                                Toast.makeText(v.getContext(),"3개 이상 등록할 수 없습니다",Toast.LENGTH_SHORT).show();
+                                Toast.makeText(v.getContext(), "3개 이상 등록할 수 없습니다", Toast.LENGTH_SHORT).show();
                         }
 
                     }
@@ -200,7 +209,8 @@ public class addmap extends Fragment implements OnMapReadyCallback {
             public void onClick(View v) {
                 category1.setTag("");
                 category1.setImageResource(0);
-                if(i>0)
+                menuinfo_edit.setText("");
+                if (i > 0)
                     i--;
             }
         });
@@ -209,7 +219,8 @@ public class addmap extends Fragment implements OnMapReadyCallback {
             public void onClick(View v) {
                 category2.setTag("");
                 category2.setImageResource(0);
-                if(i>0)
+                menuinfo_edit.setText("");
+                if (i > 0)
                     i--;
             }
         });
@@ -218,7 +229,8 @@ public class addmap extends Fragment implements OnMapReadyCallback {
             public void onClick(View v) {
                 category3.setTag("");
                 category3.setImageResource(0);
-                if(i>0)
+                menuinfo_edit.setText("");
+                if (i > 0)
                     i--;
             }
         });
@@ -227,9 +239,9 @@ public class addmap extends Fragment implements OnMapReadyCallback {
             public void onClick(View v) {
 
                 String Address = address.getText().toString();
-    
-                String sel_category= category1.getTag().toString()+" "+category2.getTag().toString()+" "+category3.getTag().toString();
-                if(sel_category.trim().equals("")){
+
+                String sel_category = category1.getTag().toString() + " " + category2.getTag().toString() + " " + category3.getTag().toString();
+                if (sel_category.trim().equals("")) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                     dialog = builder.setMessage("카테고리를 하나이상 체크해주세요.").setNegativeButton("확인", null).create();
                     dialog.show();
@@ -240,17 +252,17 @@ public class addmap extends Fragment implements OnMapReadyCallback {
                 String temppay1;
                 String temppay2;
 
-                for(int i=0;i<pay.length;i++){
-                    if(pay[i].isChecked()){
+                for (int i = 0; i < pay.length; i++) {
+                    if (pay[i].isChecked()) {
                         temppay1 = howtopay;
-                        temppay2 =  pay[i].getText().toString();
-                        if(temppay1.equals("")){
-                            howtopay = temppay1+temppay2;
-                        }else
-                            howtopay = temppay1+","+temppay2;
+                        temppay2 = pay[i].getText().toString();
+                        if (temppay1.equals("")) {
+                            howtopay = temppay1 + temppay2;
+                        } else
+                            howtopay = temppay1 + "," + temppay2;
                     }
                 }
-                if(howtopay.trim().isEmpty()){
+                if (howtopay.trim().isEmpty()) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                     dialog = builder.setMessage("결제방식을 하나이상 체크해주세요.").setNegativeButton("확인", null).create();
                     dialog.show();
@@ -260,14 +272,14 @@ public class addmap extends Fragment implements OnMapReadyCallback {
                 String closeddays = "";
                 String tempday1;
                 String tempday2;
-                for(int i=0;i<cls_day.length;i++){
-                    if(cls_day[i].isChecked()){
+                for (int i = 0; i < cls_day.length; i++) {
+                    if (cls_day[i].isChecked()) {
                         tempday1 = closeddays;
-                        tempday2 =  cls_day[i].getText().toString();
-                        if(closeddays.equals("")){
-                            closeddays = tempday1+tempday2;
-                        }else
-                            closeddays = tempday1+","+tempday2;
+                        tempday2 = cls_day[i].getText().toString();
+                        if (closeddays.equals("")) {
+                            closeddays = tempday1 + tempday2;
+                        } else
+                            closeddays = tempday1 + "," + tempday2;
                     }
                 }
                 DecimalFormat formatter = new DecimalFormat("00");
@@ -283,7 +295,7 @@ public class addmap extends Fragment implements OnMapReadyCallback {
                 String formattedHour_e = formatter.format(e_hours);
                 String formattedMinute_e = formatter.format(e_minutes);
 
-                String operationtime = String.valueOf(formattedHour_s+":"+formattedMinute_s+"~"+formattedHour_e+":"+formattedMinute_e);
+                String operationtime = String.valueOf(formattedHour_s + ":" + formattedMinute_s + "~" + formattedHour_e + ":" + formattedMinute_e);
                 String menuinfo = menuinfo_edit.getText().toString();
                 Response.Listener<String> responseListener = new Response.Listener<String>() {
                     @Override
@@ -292,9 +304,9 @@ public class addmap extends Fragment implements OnMapReadyCallback {
                             JSONObject jsonResponse = new JSONObject(response);
                             boolean success = jsonResponse.getBoolean("success");
                             AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-                            if(success){
+                            if (success) {
                                 dialog = builder.setMessage("등록완료.").setPositiveButton("확인", null).create();
-                            }else{
+                            } else {
                                 dialog = builder.setMessage("등록실패.").setNegativeButton("확인", null).create();
                             }
                             dialog.show();
@@ -303,13 +315,14 @@ public class addmap extends Fragment implements OnMapReadyCallback {
                         }
                     }
                 };
-                AddMapRequest addMapRequest = new AddMapRequest(Address,sel_category ,howtopay,closeddays,operationtime,menuinfo,responseListener);
+                AddMapRequest addMapRequest = new AddMapRequest(Address, sel_category, howtopay, closeddays, operationtime, menuinfo, userid,responseListener);
                 RequestQueue queue = Volley.newRequestQueue(v.getContext());
                 queue.add(addMapRequest);
             }
         });
         return v;
     }
+
     @Override
     public void onResume() {
         mapView.onResume();
@@ -333,21 +346,20 @@ public class addmap extends Fragment implements OnMapReadyCallback {
     public void onMapReady(@NonNull GoogleMap googleMap) {//mapview 설정
 
         MapsInitializer.initialize(this.getActivity());
-        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(35.141233, 126.925594), 14);
+        //CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(35.141233, 126.925594), 14);
         //처음 생성될때 마커 설정용
-        MarkerOptions yourMarkerInstance = new MarkerOptions();//사용할 마커 설정
-        EditText address = v.findViewById(R.id.location);//가게위치 인플레이팅
+        //MarkerOptions yourMarkerInstance = new MarkerOptions();//사용할 마커 설정
+        EditText address = v.findViewById(R.id.location);//가게위치 에딧텍스트 인플레이팅
         LatLng centerOfMap = googleMap.getCameraPosition().target; //지도의 정중앙
-        yourMarkerInstance.position(centerOfMap);//마커 지도 정중앙으로
-        googleMap.addMarker(yourMarkerInstance);//마커 생성
-
-        googleMap.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
+        //yourMarkerInstance.position(centerOfMap);//마커 지도 정중앙으로
+        //googleMap.addMarker(yourMarkerInstance);//마커 생성
+        googleMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
             @Override
-            public void onCameraMove() {
-                googleMap.clear();//이전 마커 지우는 용도
+            public void onCameraIdle() {
+                //googleMap.clear();//이전 마커 지우는 용도
                 LatLng centerOfMap = googleMap.getCameraPosition().target; //지도의 정중앙
-                yourMarkerInstance.position(centerOfMap);//마커 지도 정중앙으로
-                googleMap.addMarker(yourMarkerInstance);//마커 생성
+                //yourMarkerInstance.position(centerOfMap);//마커 지도 정중앙으로
+                //googleMap.addMarker(yourMarkerInstance);//마커 생성
                 Geocoder g = new Geocoder(v.getContext(), Locale.KOREAN);//지오코딩
                 try {//가게위치 에딧텍스트에 주소입력
                     address.setText(g.getFromLocation(centerOfMap.latitude, centerOfMap.longitude, 1).get(0).getAddressLine(0));
@@ -362,7 +374,7 @@ public class addmap extends Fragment implements OnMapReadyCallback {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 switch (keyCode) {
                     case KeyEvent.KEYCODE_ENTER://엔터치면 주소를 좌표로 변환
-                        if(!address.getText().toString().equals("")){
+                        if (!address.getText().toString().equals("")) {
                             Geocoder geocoder = new Geocoder(v.getContext(), Locale.getDefault());
                             List<android.location.Address> addresses = null;
                             try {
@@ -383,7 +395,51 @@ public class addmap extends Fragment implements OnMapReadyCallback {
                 return false;
             }
         });
-
     }
+    private Void returncategory(String category) {
 
+        String info=category;
+        EditText menuinfo_edit = v.findViewById(R.id.menu_info);
+        String ex_text = menuinfo_edit.getText().toString();
+        Log.d("test", category);
+        switch (info) {
+            case "taiyaki":
+                if(ex_text.isEmpty()){
+                    menuinfo_edit.setText(ex_text+"붕어빵 : 1개/   원");
+                }else
+                    menuinfo_edit.setText(ex_text+"\n"+"붕어빵 : 1개/   원");
+                break;
+            case "k_pancake":
+                if(ex_text.isEmpty()){
+                    menuinfo_edit.setText(ex_text+"호떡 : 1개/   원");
+                }else
+                    menuinfo_edit.setText(ex_text+"\n"+"호떡 : 1개/   원");
+                break;
+            case "ricecake":
+                if(ex_text.isEmpty()){
+                    menuinfo_edit.setText(ex_text+"떡볶이 : 1개/   원");
+                }else
+                    menuinfo_edit.setText(ex_text+"\n"+"떡볶이 : 1개/   원");
+                break;
+            case "takoyaki":
+                if(ex_text.isEmpty()){
+                    menuinfo_edit.setText(ex_text+"타코야키 : 1개/   원");
+                }else
+                    menuinfo_edit.setText(ex_text+"\n"+"타코야키 : 1개/   원");
+                break;
+            case "toast":
+                if(ex_text.isEmpty()){
+                    menuinfo_edit.setText(ex_text+"토스트 : 1개/   원");
+                }else
+                    menuinfo_edit.setText(ex_text+"\n"+"토스트 : 1개/   원");
+                break;
+            case "tanghuru":
+                if(ex_text.isEmpty()){
+                    menuinfo_edit.setText(ex_text+"탕후루 : 1개/   원");
+                }else
+                    menuinfo_edit.setText(ex_text+"\n"+"탕후루 : 1개/   원");
+                break;
+        }
+        return null;
+    }
 }

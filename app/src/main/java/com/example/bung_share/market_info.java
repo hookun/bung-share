@@ -152,8 +152,8 @@ public class market_info extends Fragment {
                         logo.setImageResource(R.drawable.close_icon);
                     } else {
                         String maincategory = category.substring(0, category.indexOf(" "));
-                        String[] imagename = {"homeicon", "loveit_off", "loveit_on", "review", "mapicon"};
-                        Integer[] image = {R.drawable.homeicon, R.drawable.loveit_off, R.drawable.loveit_on, R.drawable.review, R.drawable.mapicon};
+                        String[] imagename = {"taiyaki", "k_pancake", "ricecake", "takoyaki","toast" ,"tanghuru"};
+                        Integer[] image = {R.drawable.taiyaki, R.drawable.k_pancake, R.drawable.ricecake, R.drawable.takoyaki, R.drawable.toast, R.drawable.tanghuru};
                         for (int i = 0; i < imagename.length; i++) {
                             if (imagename[i].equals(maincategory)) {
                                 logo.setImageResource(image[i]);

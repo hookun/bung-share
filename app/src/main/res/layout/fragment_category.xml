@@ -20,38 +20,55 @@
    <GridLayout
        android:layout_width="match_parent"
        android:layout_height="wrap_content"
-       android:columnCount="5"
+       android:columnCount="6"
        android:rowCount="4">
         <ImageButton
-            android:src="@drawable/homeicon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:scaleType="fitCenter"
+            android:padding="10dp"
+            android:src="@drawable/taiyaki"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
             android:id="@+id/btn1"
-            android:tag=""
             />
        <ImageButton
-           android:src="@drawable/loveit_off"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
+           android:scaleType="fitCenter"
+           android:padding="10dp"
+           android:src="@drawable/k_pancake"
+           android:layout_width="60dp"
+           android:layout_height="60dp"
            android:id="@+id/btn2"
            android:text="1"/>
        <ImageButton
-           android:src="@drawable/loveit_on"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
+           android:scaleType="fitCenter"
+           android:padding="10dp"
+           android:src="@drawable/ricecake"
+           android:layout_width="60dp"
+           android:layout_height="60dp"
            android:id="@+id/btn3"
            android:text="1"/>
        <ImageButton
-           android:src="@drawable/review"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
+           android:scaleType="fitCenter"
+           android:padding="10dp"
+           android:src="@drawable/takoyaki"
+           android:layout_width="60dp"
+           android:layout_height="60dp"
            android:id="@+id/btn4"
            android:text="1"/>
        <ImageButton
-           android:src="@drawable/mapicon"
-           android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
+           android:scaleType="fitCenter"
+           android:padding="10dp"
+           android:src="@drawable/toast"
+           android:layout_width="60dp"
+           android:layout_height="60dp"
            android:id="@+id/btn5"
+           android:text="1"/>
+       <ImageButton
+           android:scaleType="fitCenter"
+           android:padding="10dp"
+           android:src="@drawable/tanghuru"
+           android:layout_width="60dp"
+           android:layout_height="60dp"
+           android:id="@+id/btn6"
            android:text="1"/>
 
 

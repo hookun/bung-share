@@ -30,7 +30,16 @@
             app:layout_constraintVertical_bias="1.0"
             app:mapType="terrain"
             tools:layout_editor_absoluteX="56dp" />
-
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/marker"
+            app:tint="#FF0000"
+            app:layout_constraintTop_toTopOf="@id/market_map"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/market_map"
+            />
         <TextView
             android:id="@+id/location_txt"
             android:layout_width="wrap_content"
@@ -79,6 +88,8 @@
             android:layout_marginStart="20dp"/>
 
         <ImageButton
+            android:scaleType="fitCenter"
+            android:padding="10dp"
             android:tag=""
             android:id="@+id/category1"
             android:layout_width="50dp"
@@ -88,6 +99,8 @@
             android:layout_marginTop="20dp"
             android:layout_marginStart="20dp"/>
         <ImageButton
+            android:scaleType="fitCenter"
+            android:padding="10dp"
             android:tag=""
             android:id="@+id/category2"
             android:layout_width="50dp"
@@ -97,6 +110,8 @@
             android:layout_marginTop="20dp"
             android:layout_marginStart="20dp"/>
         <ImageButton
+            android:scaleType="fitCenter"
+            android:padding="10dp"
             android:tag=""
             android:id="@+id/category3"
             android:layout_width="50dp"

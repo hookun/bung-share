@@ -2,6 +2,8 @@ package com.example.bung_share;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
@@ -13,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,6 +31,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -127,8 +132,10 @@ public class home extends Fragment {
                                 storeId.add(jsonObject.getString("storeId"));
                                 category.add(jsonObject.getString("category"));
                                 address.add(jsonObject.getString("address"));
-                                Log.d("test", i + "/" + storeId.get(i) + "/" + address.get(i));
-
+                                Log.d("test", i + "/" + storeId.get(i) + "/" + address.get(i)+"/"+category.get(i));
+                                String temp = category.get(i).toString();
+                                Log.d("test", "시발"+temp);
+                                String icon = temp.substring(0, temp.indexOf(" "));
                                 // 주소를 위도, 경도로 변환
                                 Geocoder geocoder = new Geocoder(v.getContext(), Locale.getDefault());
                                 List<android.location.Address> addresses = null;
@@ -144,6 +151,13 @@ public class home extends Fragment {
                                     android.location.Address addressObject = addresses.get(0);
                                     LatLng latLng = new LatLng(addressObject.getLatitude(), addressObject.getLongitude());
                                     markerOptions.position(latLng);
+
+                                    // 전달 받은 result 값(해당버튼이미지) 받아서 값설정
+                                    int imageResourceId = getResources().getIdentifier(icon, "drawable", v.getContext().getPackageName());
+
+                                    Bitmap bitmap = BitmapFactory.decodeResource(getResources(), imageResourceId);
+                                    Bitmap resizedBitmap = Bitmap.createScaledBitmap(bitmap, 70, 70, false);
+                                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(resizedBitmap));
                                     Marker marker = gMap.addMarker(markerOptions); // Store the marker object
                                     marker.setTag(storeId.get(i)); // Set the store ID as the tag for the marker
 
@@ -242,6 +256,5 @@ public class home extends Fragment {
 
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
     }
-
 
 }
