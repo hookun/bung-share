@@ -107,10 +107,11 @@ public class market_info extends Fragment {
         }
 
         Bundle bundle = getArguments();
-        String value = bundle.getString("storeId");
-        String id = bundle.getString("userid");
+        String storeId = bundle.getString("storeId");
+        String userid = bundle.getString("userid");
+        //번들로 가개아이디와 유저아이디값 받아옴
 
-
+        //인플레이팅
         logo = v.findViewById(R.id.logo);
         market_info = v.findViewById(R.id.market_info);
         like_button = v.findViewById(R.id.likebutton);
@@ -125,6 +126,7 @@ public class market_info extends Fragment {
             public void onResponse(String response) {
                 try {
                     JSONObject jsonResponse = new JSONObject(response);
+                    //리스폰스에서 값 받아오기
                     String category = jsonResponse.getString("category");
                     String address = jsonResponse.getString("address");
                     Double rating = jsonResponse.getDouble("rating");
@@ -137,11 +139,11 @@ public class market_info extends Fragment {
                     String menu = jsonResponse.getString("menu");
                     boolean isdibed = jsonResponse.getBoolean("isDibsed");
 
-                    market_info marketInfoFragment = new market_info();
 
+                    market_info marketInfoFragment = new market_info();
                     // Market_info 프래그먼트에 마커의 정보를 전달합니다.
                     Bundle bundle = new Bundle();
-                    bundle.putString("storeId", value);
+                    bundle.putString("storeId", storeId);
                     marketInfoFragment.setArguments(bundle);
                     Log.d("test", address);
                     if(closedays.equals("")){
@@ -194,7 +196,7 @@ public class market_info extends Fragment {
                                 }
                             };
 
-                            Add_dibs_Request addDibsRequest = new Add_dibs_Request(like_button.getTag().toString(), value,id,responseListener);
+                            Add_dibs_Request addDibsRequest = new Add_dibs_Request(like_button.getTag().toString(), storeId,userid,responseListener);
                             RequestQueue queue = Volley.newRequestQueue(v.getContext());
                             queue.add(addDibsRequest);
                         }
@@ -272,7 +274,7 @@ public class market_info extends Fragment {
             }
         };
 
-        InfoRequest infoRequest = new InfoRequest(value, id,responseListener);
+        InfoRequest infoRequest = new InfoRequest(storeId, userid,responseListener);
         RequestQueue queue = Volley.newRequestQueue(v.getContext());
         queue.add(infoRequest);
 
@@ -286,8 +288,8 @@ public class market_info extends Fragment {
 
                 // Market_info 프래그먼트에 마커의 정보를 전달합니다.
                 Bundle bundle = new Bundle();
-                bundle.putString("storeId", value);
-                bundle.putString("userid",id);
+                bundle.putString("storeId", storeId);
+                bundle.putString("userid",userid);
                 bottomSheet1.setArguments(bundle);
                 bottomSheet1.show(activity.getSupportFragmentManager(), bottomSheet1.getTag());
             }
@@ -297,7 +299,7 @@ public class market_info extends Fragment {
             public void onClick(View v) {
                 bottomSheet2 = new view_review();
                 Bundle bundle = new Bundle();
-                bundle.putString("storeId", value);
+                bundle.putString("storeId", storeId);
                 bottomSheet2.setArguments(bundle);
                 bottomSheet2.show(activity.getSupportFragmentManager(), bottomSheet2.getTag());
             }

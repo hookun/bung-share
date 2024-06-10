@@ -41,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
         bundle.putString("userid", id);
         // 프래그먼트에 번들 설정
         homeFragment.setArguments(bundle);
+        //바로 홈프래그먼트로 번들전달후 그 프래그먼트로 이동
         getSupportFragmentManager().beginTransaction().replace(R.id.main_container, homeFragment).commit();
 
         NavigationBarView navigationBarView = findViewById(R.id.bottom_navigation_view);
@@ -50,10 +51,10 @@ public class MainActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
 
                 int itemId = item.getItemId();//이부분 보소서에 switch쓸라는데 안됐다고 할것
-                if (itemId == R.id.home) {
+                if (itemId == R.id.home) {//홈화면
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_container, homeFragment).commit();
                     return true;
-                } else if (itemId == R.id.addmap) {
+                } else if (itemId == R.id.addmap) {//제보화면
                     Bundle bundle = new Bundle();
                     // 번들 객체에 값 저장
                     bundle.putString("key", id);
@@ -61,8 +62,7 @@ public class MainActivity extends AppCompatActivity {
                     mapFragment.setArguments(bundle);
                     getSupportFragmentManager().beginTransaction().replace(R.id.main_container, mapFragment).commit();
                     return true;
-                } else if (itemId == R.id.user) {
-                   //getSupportFragmentManager().beginTransaction().replace(R.id.main_container,market_info).commit();
+                } else if (itemId == R.id.user) {//유저화면
                     Bundle bundle = new Bundle();
                     // 번들 객체에 값 저장
                     bundle.putString("key", id);

@@ -81,9 +81,9 @@ public class category extends BottomSheetDialogFragment {
             @Override
             public void onClick(View view) {
                 dismiss();
-            }
+            }//X버튼 누르면 창 닫히게
         });
-        ImageButton btn1,btn2,btn3,btn4,btn5,btn6;
+        ImageButton btn1,btn2,btn3,btn4,btn5,btn6; //카테고리 종류 6가지 인플레이팅
         btn1 = (ImageButton) getView().findViewById(R.id.btn1);
         btn2 = (ImageButton) getView().findViewById(R.id.btn2);
         btn3 = (ImageButton) getView().findViewById(R.id.btn3);

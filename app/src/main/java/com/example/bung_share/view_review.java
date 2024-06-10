@@ -42,12 +42,13 @@ public class view_review extends BottomSheetDialogFragment {
         super.onViewCreated(view, savedInstanceState);
         Bundle bundle = getArguments();
         String storeId = bundle.getString("storeId");
+        //번들에서 가게아이디 받아오기
         ratingBar = view.findViewById(R.id.avg_rating);
         view.findViewById(R.id.close_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 dismiss();
-            }
+            }//X버튼누르면 창 닫기
         });
         LinearLayout linearLayout = view.findViewById(R.id.review_scroll);
         Response.Listener<String> responseListener = new Response.Listener<String>() {
@@ -56,7 +57,7 @@ public class view_review extends BottomSheetDialogFragment {
                 try {
                     JSONObject jsonResponse = new JSONObject(response);
                     boolean hasReview = jsonResponse.getBoolean("success");
-                    double averageRating = jsonResponse.getDouble("average_rating");
+                    double averageRating = jsonResponse.getDouble("average_rating");//jsp에서 구한 별점 평균값
 
                     JSONArray reviewsArray = jsonResponse.getJSONArray("reviews");
                     if(hasReview) {
@@ -68,24 +69,24 @@ public class view_review extends BottomSheetDialogFragment {
                             String content = reviewObject.getString("content");
                             String modifiedDate = reviewObject.getString("modifiedDate");
 
-                            // ConstraintLayout 생성
+                            // ConstraintLayout 동적생성
                             ConstraintLayout constraintLayout = new ConstraintLayout(view.getContext());
                             ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(
                                     ConstraintLayout.LayoutParams.MATCH_PARENT,
                                     ConstraintLayout.LayoutParams.WRAP_CONTENT
-                            );
+                            ); //ConstraintLayout 동적생성 속성값
                             layoutParams.topMargin = dpToPx(10);
                             constraintLayout.setLayoutParams(layoutParams);
                             constraintLayout.setBackgroundResource(R.drawable.round_coners);
                             constraintLayout.setBackgroundTintList(ContextCompat.getColorStateList(view.getContext(), R.color.grey));
 
 
-                            // ID용 TextView 생성
+                            // ID용 Textview 동적생성
                             TextView reviewIdTextView = new TextView(view.getContext());
                             ConstraintLayout.LayoutParams reviewIdLayoutParams = new ConstraintLayout.LayoutParams(
                                     ConstraintLayout.LayoutParams.WRAP_CONTENT,
                                     ConstraintLayout.LayoutParams.WRAP_CONTENT
-                            );
+                            );//
                             reviewIdLayoutParams.topMargin = dpToPx(10);
                             reviewIdLayoutParams.leftMargin = dpToPx(20);
                             reviewIdTextView.setLayoutParams(reviewIdLayoutParams);
@@ -93,7 +94,7 @@ public class view_review extends BottomSheetDialogFragment {
                             reviewIdTextView.setTextSize(18);
                             reviewIdTextView.setId(View.generateViewId());
 
-                            //시간용 TextView 생성
+                            //시간용 TextView 동적생성
                             TextView reviewTime = new TextView(view.getContext());
                             ConstraintLayout.LayoutParams reviewTimeLayoutParams = new ConstraintLayout.LayoutParams(
                                     ConstraintLayout.LayoutParams.WRAP_CONTENT,
@@ -106,7 +107,7 @@ public class view_review extends BottomSheetDialogFragment {
                             reviewTime.setTextSize(12);
                             reviewTime.setId(View.generateViewId());
 
-                            // RatingBar 생성
+                            // RatingBar 동적생성
                             RatingBar ratingBar = new RatingBar(view.getContext(), null, android.R.attr.ratingBarStyleIndicator);
                             ConstraintLayout.LayoutParams ratingBarLayoutParams = new ConstraintLayout.LayoutParams(
                                     ConstraintLayout.LayoutParams.WRAP_CONTENT,
@@ -120,7 +121,7 @@ public class view_review extends BottomSheetDialogFragment {
                             ratingBar.setNumStars(5);
                             ratingBar.setIsIndicator(true);
                             ratingBar.setId(View.generateViewId());
-                            // 리뷰 내용 TextView 생성
+                            // 리뷰 내용 TextView 동적생성
                             TextView reviewTextView = new TextView(view.getContext());
                             ConstraintLayout.LayoutParams reviewTextLayoutParams = new ConstraintLayout.LayoutParams(
                                     ConstraintLayout.LayoutParams.MATCH_PARENT,
@@ -159,9 +160,9 @@ public class view_review extends BottomSheetDialogFragment {
                             linearLayout.addView(constraintLayout);
                         }
                         ratingBar.setRating((float) averageRating);
-                    }else{
-                        dismiss();
-                        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                    }else{//리뷰가 하나도 존재하지 않을경우
+                        dismiss();//창닫고
+                        AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());//얼럿다이얼로그 출력
                         builder.setTitle("리뷰가 없습니다");
                         builder.setPositiveButton("확인", null);
                         AlertDialog dialog = builder.create();

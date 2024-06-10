@@ -24,14 +24,14 @@ public class loginActivity extends AppCompatActivity {
         setContentView(R.layout.login);
 
         TextView tvRegister = findViewById(R.id.toRegister);
-        tvRegister.setOnClickListener(v -> {
+        tvRegister.setOnClickListener(v -> {//회원가입 누르면 회원가입 창으로 이동
             Intent intent = new Intent(this, regiseterActivity.class);
             startActivity(intent);
         });
         final EditText etid = findViewById(R.id.loginid);
         final EditText etpwd = findViewById(R.id.loginpw);
         final Button btnLogin = findViewById(R.id.loginButton);
-        btnLogin.setOnClickListener(new View.OnClickListener() {
+        btnLogin.setOnClickListener(new View.OnClickListener() {//로그인버튼
             @Override
             public void onClick(View v) {
                 final String id = etid.getText().toString();
@@ -43,14 +43,14 @@ public class loginActivity extends AppCompatActivity {
                         try {
                             JSONObject jsonResponse = new JSONObject(response);
                             boolean success = jsonResponse.getBoolean("success");
-                            if(success){
+                            if(success){//로그인성공시
                                 AlertDialog.Builder builder = new AlertDialog.Builder(loginActivity.this);
                                 dialog = builder.setMessage("로그인 성공.").setPositiveButton("확인", null).create();
                                 dialog.show();
                                 Intent intent = new Intent( loginActivity.this, MainActivity.class );
                                 intent.putExtra("id", id);
                                 startActivity( intent );
-                            }else{
+                            }else{//로그인실패시
                                 AlertDialog.Builder builder = new AlertDialog.Builder(loginActivity.this);
                                 dialog = builder.setMessage("로그인 실패.").setNegativeButton("확인", null).create();
                                 dialog.show();

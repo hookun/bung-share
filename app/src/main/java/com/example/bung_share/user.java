@@ -88,7 +88,7 @@ public class user extends Fragment {
         }
         TextView userid = v.findViewById(R.id.user);
         Bundle bundle = getArguments();
-        String value = bundle.getString("key");
+        String userID = bundle.getString("key");//유저아이디값 받아오기
         Response.Listener<String> responseListener = new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -119,13 +119,13 @@ public class user extends Fragment {
                             public void onClick(View v) {
                                 market_info marketInfoFragment = new market_info();
 
-                                // Market_info 프래그먼트에 마커의 정보를 전달합니다.
+                                // Market_info 프래그먼트에 마커의 정보를 전달
                                 Bundle bundle = new Bundle();
                                 bundle.putString("storeId", storeId);
-                                bundle.putString("userid",value);
+                                bundle.putString("userid",userID);
                                 marketInfoFragment.setArguments(bundle);
 
-                                // Market_info 프래그먼트로 화면을 전환합니다.
+                                // Market_info 프래그먼트로 화면을 전환
                                 requireActivity().getSupportFragmentManager().beginTransaction()
                                         .replace(R.id.main_container, marketInfoFragment)
                                         .addToBackStack(null)
@@ -141,12 +141,12 @@ public class user extends Fragment {
                         String storeId = reviewsObj.getString("storeId");
                         String address = reviewsObj.getString("address");
                         // 받아온 데이터를 원하는 대로 처리
-                        LinearLayout linearLayout = v.findViewById(R.id.reviewed_layout); // 여기에는 실제 LinearLayout의 ID를 넣어주세요
-
-                        Button button = new Button(v.getContext()); // Context를 인자로 받는 생성자를 사용하여 Button 객체를 생성합니다.
+                        LinearLayout linearLayout = v.findViewById(R.id.reviewed_layout);
+                        //버튼 동적생성
+                        Button button = new Button(v.getContext()); // Context를 인자로 받는 생성자를 사용하여 Button 객체를 생성합
                         button.setLayoutParams(new LinearLayout.LayoutParams(
                                 LinearLayout.LayoutParams.MATCH_PARENT,
-                                dpToPx(40) // 높이는 40dp
+                                dpToPx(40)
                         ));
                         button.setPadding(dpToPx(10), 0, dpToPx(20), 0); // padding 설정
                         button.setText(address); // 버튼에 표시할 텍스트 설정
@@ -157,13 +157,13 @@ public class user extends Fragment {
                             public void onClick(View v) {
                                 market_info marketInfoFragment = new market_info();
 
-                                // Market_info 프래그먼트에 마커의 정보를 전달합니다.
+                                // Market_info 프래그먼트에 마커의 정보를 전달
                                 Bundle bundle = new Bundle();
                                 bundle.putString("storeId", storeId);
-                                bundle.putString("userid",value);
+                                bundle.putString("userid",userID);
                                 marketInfoFragment.setArguments(bundle);
 
-                                // Market_info 프래그먼트로 화면을 전환합니다.
+                                // Market_info 프래그먼트로 화면을 전환
                                 requireActivity().getSupportFragmentManager().beginTransaction()
                                         .replace(R.id.main_container, marketInfoFragment)
                                         .addToBackStack(null)
@@ -178,9 +178,9 @@ public class user extends Fragment {
                         JSONObject storesObj = storesArray.getJSONObject(i);
                         String storeId = storesObj.getString("storeId");
                         String address = storesObj.getString("address");
-                        // 받아온 데이터를 원하는 대로 처리
-                        LinearLayout linearLayout = v.findViewById(R.id.added_layout); // 여기에는 실제 LinearLayout의 ID를 넣어주세요
 
+                        LinearLayout linearLayout = v.findViewById(R.id.added_layout); // 여기에는 실제 LinearLayout의 ID를 넣어주세요
+                        //버튼 동적생성
                         Button button = new Button(v.getContext()); // Context를 인자로 받는 생성자를 사용하여 Button 객체를 생성합니다.
                         button.setLayoutParams(new LinearLayout.LayoutParams(
                                 LinearLayout.LayoutParams.MATCH_PARENT,
@@ -195,13 +195,13 @@ public class user extends Fragment {
                             public void onClick(View v) {
                                 market_info marketInfoFragment = new market_info();
 
-                                // Market_info 프래그먼트에 마커의 정보를 전달합니다.
+                                // Market_info 프래그먼트에 마커의 정보를 전달
                                 Bundle bundle = new Bundle();
                                 bundle.putString("storeId", storeId);
-                                bundle.putString("userid",value);
+                                bundle.putString("userid",userID);
                                 marketInfoFragment.setArguments(bundle);
 
-                                // Market_info 프래그먼트로 화면을 전환합니다.
+                                // Market_info 프래그먼트로 화면을 전환
                                 requireActivity().getSupportFragmentManager().beginTransaction()
                                         .replace(R.id.main_container, marketInfoFragment)
                                         .addToBackStack(null)
@@ -217,13 +217,13 @@ public class user extends Fragment {
         };
 
 
-        UserRequest userRequest = new UserRequest(value,responseListener);
+        UserRequest userRequest = new UserRequest(userID,responseListener);
         RequestQueue queue = Volley.newRequestQueue(v.getContext());
         queue.add(userRequest);
 
         // 번들 객체에서 값 받기
 
-        userid.setText(value);
+        userid.setText(userID);
         return v;
     }
     private int dpToPx(int dp) {

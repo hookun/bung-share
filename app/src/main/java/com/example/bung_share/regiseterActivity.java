@@ -36,7 +36,7 @@ public class regiseterActivity extends AppCompatActivity {
        final EditText userName = (EditText) findViewById(R.id.editTextName);
        final Button btnValidate = (Button) findViewById(R.id.validateButton);
 
-        btnValidate.setOnClickListener(new View.OnClickListener() {
+        btnValidate.setOnClickListener(new View.OnClickListener() {//아이디 중복확인
             @Override
             public void onClick(View v) {
                 String id = userID.getText().toString();
@@ -48,13 +48,13 @@ public class regiseterActivity extends AppCompatActivity {
                 }
                 if(validate)return;
 
-                Response.Listener<String> responseListener = new Response.Listener<String>() {
+                Response.Listener<String> responseListener = new Response.Listener<String>() {//아이디 중복확인 리스폰스
                     @Override
                     public void onResponse(String response) {
                         try {
                             JSONObject jsonResponse = new JSONObject(response);
                             boolean newID = jsonResponse.getBoolean("newID");
-                            if(newID){
+                            if(newID){//아이디가 중복되지않을시
                                 AlertDialog.Builder builder = new AlertDialog.Builder(regiseterActivity.this);
                                 dialog = builder.setMessage("사용 가능한 아이디입니다.").setPositiveButton("확인", null).create();
                                 dialog.show();
@@ -62,7 +62,7 @@ public class regiseterActivity extends AppCompatActivity {
                                 userID.setBackgroundColor(Color.GRAY);
                                 btnValidate.setBackgroundColor(Color.GRAY);
                                 validate = true;
-                            }else{
+                            }else{//중복시
                                 AlertDialog.Builder builder = new AlertDialog.Builder(regiseterActivity.this);
                                 dialog = builder.setMessage("사용 불가한 아이디입니다.").setNegativeButton("확인", null).create();
                                 dialog.show();
@@ -79,19 +79,19 @@ public class regiseterActivity extends AppCompatActivity {
             }
         });
         Button registerbtn = findViewById(R.id.registerButton);
-        registerbtn.setOnClickListener(new View.OnClickListener() {
+        registerbtn.setOnClickListener(new View.OnClickListener() {//회원가입버튼
             @Override
             public void onClick(View v) {
                 String id = userID.getText().toString();
                 String pw = userPw.getText().toString();
                 String email = userEmail.getText().toString();
                 String name = userName.getText().toString();
-                if(!validate){
+                if(!validate){//중복체크를 하지 않았을경우
                     Toast.makeText(getApplicationContext(), "아이디 중복을 체크해주세요", Toast.LENGTH_SHORT).show();
                     userID.setFocusable(true);
                     return;
                 }
-                if(id.trim().isEmpty() || pw.trim().isEmpty() || email.trim().isEmpty()||name.trim().isEmpty()){
+                if(id.trim().isEmpty() || pw.trim().isEmpty() || email.trim().isEmpty()||name.trim().isEmpty()){//모든항목중 한가지라도 값이 없을경우
                     AlertDialog.Builder builder = new AlertDialog.Builder(regiseterActivity.this);
                     dialog = builder.setMessage("모든 항목을 입력해주세요.").setNegativeButton("확인", null).create();
                     dialog.show();

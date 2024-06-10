@@ -1,6 +1,5 @@
 package com.example.bung_share;
 
-import android.annotation.SuppressLint;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
@@ -26,14 +25,12 @@ import androidx.fragment.app.FragmentResultListener;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -86,7 +83,7 @@ public class addmap extends Fragment implements OnMapReadyCallback {
     static View v; // 프래그먼트의 뷰 인스턴스
 
     @Override
-    public void onDestroyView() {
+    public void onDestroyView() {//가게정보 추가한뒤 다시 추가해도 남아있는 찌꺼기값 없게끔
         super.onDestroyView();
         if (v != null) {
             ViewGroup parent = (ViewGroup) v.getParent();
@@ -107,7 +104,7 @@ public class addmap extends Fragment implements OnMapReadyCallback {
     }
 
     MapView mapView;
-    category bottomSheet1;
+    category bottomSheet1; //카테고리 눌렀을때 나오는 프래그먼트
 
     int i = 0;//카테고리 설정용
     private AlertDialog dialog;
@@ -123,35 +120,36 @@ public class addmap extends Fragment implements OnMapReadyCallback {
         }
 
         Bundle bundle = getArguments();
-        String userid = bundle.getString("key");
+        String userid = bundle.getString("key"); //번들써서 userid값 받아오기
 
-        TimePicker starttime = v.findViewById(R.id.timestart);
-        TimePicker endtime = v.findViewById(R.id.timeend);
-        starttime.setIs24HourView(true);
+        TimePicker starttime = v.findViewById(R.id.timestart); //시작시간
+        TimePicker endtime = v.findViewById(R.id.timeend);//종료시간
+        starttime.setIs24HourView(true);//24시간기준으로 표시되게끔
         endtime.setIs24HourView(true);
-        Button categoryButton = v.findViewById(R.id.categorybtn);
-        Button addbtn = v.findViewById(R.id.mapUpload);
-        ImageButton category1, category2, category3;
+        Button categoryButton = v.findViewById(R.id.categorybtn);//카테고리버튼
+        Button addbtn = v.findViewById(R.id.mapUpload);//제보올리기 버튼
+        ImageButton category1, category2, category3;//카테고리 설정되는거 1,2,3
         category1 = v.findViewById(R.id.category1);
         category2 = v.findViewById(R.id.category2);
         category3 = v.findViewById(R.id.category3);
-        CheckBox[] pay = new CheckBox[3];
-        Integer[] payid = {R.id.paycheck_cash, R.id.paycheck_bank, R.id.paycheck_card};
+        CheckBox[] pay = new CheckBox[3];//결제방법 체크박스 배열
+        Integer[] payid = {R.id.paycheck_cash, R.id.paycheck_bank, R.id.paycheck_card};//인플레이팅용 id
         EditText menuinfo_edit = v.findViewById(R.id.menu_info);
 
         for (int i = 0; i < payid.length; i++) {
-            pay[i] = (CheckBox) v.findViewById(payid[i]);
+            pay[i] = (CheckBox) v.findViewById(payid[i]);//
         }
-        ToggleButton[] cls_day = new ToggleButton[7];
+        ToggleButton[] cls_day = new ToggleButton[7];//휴무일 토글버튼 배열
+        //휴무일 토글버튼 인플레이팅용 id
         Integer[] cls_id = {R.id.monday, R.id.tuesday, R.id.wendsday, R.id.thirsday, R.id.friday, R.id.saturday, R.id.sunday};
         for (int i = 0; i < cls_id.length; i++) {
-            cls_day[i] = (ToggleButton) v.findViewById(cls_id[i]);
+            cls_day[i] = (ToggleButton) v.findViewById(cls_id[i]);//토글버튼 인플레이팅
         }
-        mapView = (MapView) v.findViewById(R.id.market_map);
+        mapView = (MapView) v.findViewById(R.id.market_map);//지도뷰
         mapView.onCreate(savedInstanceState);
         FragmentActivity activity = requireActivity();
         mapView.getMapAsync(this);
-        EditText address = v.findViewById(R.id.location);//가게위치 인플레이팅
+        EditText address = v.findViewById(R.id.location);//가게위치에딧텍스트 인플레이팅
         categoryButton.setOnClickListener(new View.OnClickListener() {//카테고리 설정
             @Override
             public void onClick(View v) {
@@ -170,7 +168,7 @@ public class addmap extends Fragment implements OnMapReadyCallback {
                             case 0:
                                 category1.setImageResource(imageResourceId);//이미지 찾아서 넣고
                                 category1.setTag(result);//tag사용해서 나중에 DB에 넣을 값설정
-                                returncategory(result);
+                                returncategory(result);//카테고리버튼의 태그를 받아서 그거에 맞는 정보를 메뉴정보에 미리 생성해줌
                                 i++;
                                 break;
                             case 1:
@@ -204,7 +202,7 @@ public class addmap extends Fragment implements OnMapReadyCallback {
             }
         });
 
-        category1.setOnClickListener(new View.OnClickListener() {//버튼 누르면 이미지랑 태그 값 날리는거,테코리 버튼 이미지 순서용
+        category1.setOnClickListener(new View.OnClickListener() {//버튼 누르면 이미지랑 태그 값 날리는거,카테고리 버튼 이미지 순서용
             @Override
             public void onClick(View v) {
                 category1.setTag("");
@@ -214,7 +212,7 @@ public class addmap extends Fragment implements OnMapReadyCallback {
                     i--;
             }
         });
-        category2.setOnClickListener(new View.OnClickListener() {//버튼 누르면 이미지랑 태그 값 날리는거,테코리 버튼 이미지 순서용
+        category2.setOnClickListener(new View.OnClickListener() {//버튼 누르면 이미지랑 태그 값 날리는거,카테고리 버튼 이미지 순서용
             @Override
             public void onClick(View v) {
                 category2.setTag("");
@@ -224,7 +222,7 @@ public class addmap extends Fragment implements OnMapReadyCallback {
                     i--;
             }
         });
-        category3.setOnClickListener(new View.OnClickListener() {//버튼 누르면 이미지랑 태그 값 날리는거,테코리 버튼 이미지 순서용
+        category3.setOnClickListener(new View.OnClickListener() {//버튼 누르면 이미지랑 태그 값 날리는거,카테고리 버튼 이미지 순서용
             @Override
             public void onClick(View v) {
                 category3.setTag("");
@@ -234,14 +232,14 @@ public class addmap extends Fragment implements OnMapReadyCallback {
                     i--;
             }
         });
-        addbtn.setOnClickListener(new View.OnClickListener() {
+        addbtn.setOnClickListener(new View.OnClickListener() {//제보올리기 버튼
             @Override
             public void onClick(View v) {
 
                 String Address = address.getText().toString();
 
-                String sel_category = category1.getTag().toString() + " " + category2.getTag().toString() + " " + category3.getTag().toString();
-                if (sel_category.trim().equals("")) {
+                String sel_category = category1.getTag().toString() + " " + category2.getTag().toString() + " " + category3.getTag().toString();//카테고리버튼의 태그(선택된거이름)을 받아서 하나로 저장
+                if (sel_category.trim().equals("")) {//합쳐진 카테고리문자열에 값이 없을경우
                     AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                     dialog = builder.setMessage("카테고리를 하나이상 체크해주세요.").setNegativeButton("확인", null).create();
                     dialog.show();
@@ -262,7 +260,7 @@ public class addmap extends Fragment implements OnMapReadyCallback {
                             howtopay = temppay1 + "," + temppay2;
                     }
                 }
-                if (howtopay.trim().isEmpty()) {
+                if (howtopay.trim().isEmpty()) {//저장된결제방식 문자열에 값이 없을경우
                     AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                     dialog = builder.setMessage("결제방식을 하나이상 체크해주세요.").setNegativeButton("확인", null).create();
                     dialog.show();
@@ -282,12 +280,12 @@ public class addmap extends Fragment implements OnMapReadyCallback {
                             closeddays = tempday1 + "," + tempday2;
                     }
                 }
-                DecimalFormat formatter = new DecimalFormat("00");
+                DecimalFormat formatter = new DecimalFormat("00");//시간,분을 두자리로 표현되게끔
 
-                int s_hours = starttime.getHour();
-                int s_minutes = starttime.getMinute();
-                int e_hours = endtime.getHour();
-                int e_minutes = endtime.getMinute();
+                int s_hours = starttime.getHour();//시작시간
+                int s_minutes = starttime.getMinute();//시작분
+                int e_hours = endtime.getHour();//종료시간
+                int e_minutes = endtime.getMinute();//종료분
 
                 String formattedHour_s = formatter.format(s_hours);
                 String formattedMinute_s = formatter.format(s_minutes);
@@ -295,14 +293,14 @@ public class addmap extends Fragment implements OnMapReadyCallback {
                 String formattedHour_e = formatter.format(e_hours);
                 String formattedMinute_e = formatter.format(e_minutes);
 
-                String operationtime = String.valueOf(formattedHour_s + ":" + formattedMinute_s + "~" + formattedHour_e + ":" + formattedMinute_e);
-                String menuinfo = menuinfo_edit.getText().toString();
-                Response.Listener<String> responseListener = new Response.Listener<String>() {
+                String operationtime = String.valueOf(formattedHour_s + ":" + formattedMinute_s + "~" + formattedHour_e + ":" + formattedMinute_e);//시간 전부 합쳐서 하나의 문자열로
+                String menuinfo = menuinfo_edit.getText().toString();//저장된 메뉴정보 뽑아서 저장
+                Response.Listener<String> responseListener = new Response.Listener<String>() {//리스폰스 사용
                     @Override
                     public void onResponse(String response) {
                         try {
                             JSONObject jsonResponse = new JSONObject(response);
-                            boolean success = jsonResponse.getBoolean("success");
+                            boolean success = jsonResponse.getBoolean("success");//success값 받아서 참이면 성공 거짓이면 실패
                             AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
                             if (success) {
                                 dialog = builder.setMessage("등록완료.").setPositiveButton("확인", null).create();
@@ -346,20 +344,12 @@ public class addmap extends Fragment implements OnMapReadyCallback {
     public void onMapReady(@NonNull GoogleMap googleMap) {//mapview 설정
 
         MapsInitializer.initialize(this.getActivity());
-        //CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(new LatLng(35.141233, 126.925594), 14);
-        //처음 생성될때 마커 설정용
-        //MarkerOptions yourMarkerInstance = new MarkerOptions();//사용할 마커 설정
         EditText address = v.findViewById(R.id.location);//가게위치 에딧텍스트 인플레이팅
-        LatLng centerOfMap = googleMap.getCameraPosition().target; //지도의 정중앙
-        //yourMarkerInstance.position(centerOfMap);//마커 지도 정중앙으로
-        //googleMap.addMarker(yourMarkerInstance);//마커 생성
+        //LatLng centerOfMap = googleMap.getCameraPosition().target; //지도의 정중앙
         googleMap.setOnCameraIdleListener(new GoogleMap.OnCameraIdleListener() {
             @Override
             public void onCameraIdle() {
-                //googleMap.clear();//이전 마커 지우는 용도
                 LatLng centerOfMap = googleMap.getCameraPosition().target; //지도의 정중앙
-                //yourMarkerInstance.position(centerOfMap);//마커 지도 정중앙으로
-                //googleMap.addMarker(yourMarkerInstance);//마커 생성
                 Geocoder g = new Geocoder(v.getContext(), Locale.KOREAN);//지오코딩
                 try {//가게위치 에딧텍스트에 주소입력
                     address.setText(g.getFromLocation(centerOfMap.latitude, centerOfMap.longitude, 1).get(0).getAddressLine(0));
@@ -374,7 +364,7 @@ public class addmap extends Fragment implements OnMapReadyCallback {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 switch (keyCode) {
                     case KeyEvent.KEYCODE_ENTER://엔터치면 주소를 좌표로 변환
-                        if (!address.getText().toString().equals("")) {
+                        if (!address.getText().toString().equals("")) {//값이 있는경우만
                             Geocoder geocoder = new Geocoder(v.getContext(), Locale.getDefault());
                             List<android.location.Address> addresses = null;
                             try {
@@ -396,7 +386,7 @@ public class addmap extends Fragment implements OnMapReadyCallback {
             }
         });
     }
-    private Void returncategory(String category) {
+    private void returncategory(String category) {//카테고리버튼의 태그를 받아서 그거에 맞는 정보를 메뉴정보에 미리 생성해줌
 
         String info=category;
         EditText menuinfo_edit = v.findViewById(R.id.menu_info);
@@ -404,9 +394,9 @@ public class addmap extends Fragment implements OnMapReadyCallback {
         Log.d("test", category);
         switch (info) {
             case "taiyaki":
-                if(ex_text.isEmpty()){
+                if(ex_text.isEmpty()){//메뉴정보에 값이 없을경우
                     menuinfo_edit.setText(ex_text+"붕어빵 : 1개/   원");
-                }else
+                }else//있을경우 한줄 넘기고 붙이기
                     menuinfo_edit.setText(ex_text+"\n"+"붕어빵 : 1개/   원");
                 break;
             case "k_pancake":
@@ -440,6 +430,5 @@ public class addmap extends Fragment implements OnMapReadyCallback {
                     menuinfo_edit.setText(ex_text+"\n"+"탕후루 : 1개/   원");
                 break;
         }
-        return null;
     }
 }

@@ -1,10 +1,6 @@
 package com.example.bung_share;
+
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +8,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RatingBar;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -33,7 +33,7 @@ public class info_review_fragment extends BottomSheetDialogFragment {
 
     RatingBar ratingBar;
     EditText review_content;
-    public class CustomEvent {
+    public class CustomEvent {//이벤트 버스사용
         private int value;
 
         public CustomEvent(int value) {
@@ -54,7 +54,7 @@ public class info_review_fragment extends BottomSheetDialogFragment {
         ratingBar = view.findViewById(R.id.RatingBar_review);
         review_content = view.findViewById(R.id.et_review);
 
-        view.findViewById(R.id.close_btn).setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.close_btn).setOnClickListener(new View.OnClickListener() {//X버튼 누르면 창닫기
             @Override
             public void onClick(View view) {
                 dismiss();
@@ -63,12 +63,12 @@ public class info_review_fragment extends BottomSheetDialogFragment {
         String userId, storeId;
         Button upload_btn = view.findViewById(R.id.btn_upload_review);
 
-        Bundle bundle = getArguments();
+        Bundle bundle = getArguments();//번들에서 storeid,userid값 받아오기
         storeId = bundle.getString("storeId");
         userId = bundle.getString("userid");
 
 
-        upload_btn.setOnClickListener(new View.OnClickListener() {
+        upload_btn.setOnClickListener(new View.OnClickListener() {//리뷰 업로드 버튼 눌렀을때
             @Override
             public void onClick(View v) {
                 String rating = String.valueOf(ratingBar.getRating());
@@ -78,18 +78,20 @@ public class info_review_fragment extends BottomSheetDialogFragment {
                     public void onResponse(String response) {
                         try {
                             JSONObject jsonResponse = new JSONObject(response);
-                            boolean success = jsonResponse.getBoolean("success");
-                            boolean already = jsonResponse.getBoolean("already");
-                            int reviewcount = jsonResponse.getInt("reviewCount");
+                            Log.d("test",response.toString());
+                            boolean success = jsonResponse.getBoolean("success");//DB삽입 확인용
+                            boolean already = jsonResponse.getBoolean("already");//미리 같은 계정으로 작성한 리뷰가 있을경우 false
+                            int reviewcount;
 
                             AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
-                            if(success){
+                            if(success){//성공시
+                                reviewcount = jsonResponse.getInt("reviewCount");//그 가게의 리뷰 갯수를 성공했을때만 받아옴
                                 dialog = builder.setMessage("등록완료.").setPositiveButton("확인", null).create();
                                 CustomEvent event = new CustomEvent(reviewcount);
                                 EventBus.getDefault().post(event);
-                            }else if(!success&&already){
+                            }else if(!success&&already){//이미 작성한 리뷰가 있을경우
                                 dialog = builder.setMessage("이미 작성한 리뷰가 있습니다.").setNegativeButton("확인", null).create();
-                            }else{
+                            }else{//실패시
                                 dialog = builder.setMessage("등록실패").setNegativeButton("확인", null).create();
                             }
                             dialog.show();
